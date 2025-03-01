@@ -1,0 +1,35 @@
+name: UI Service ci
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "ui/**"
+      - ".github/workflows/ui.yaml"
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Login to the Container registry
+        if: ${{ github.ref == 'refs/heads/master' }}
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.TOKEN }}
+      - name: Build and push Docker Images
+        if: ${{ github.ref == 'refs/heads/master' }}
+        uses: docker/build-push-action@v3
+        with:
+          context: ./ui
+          push: true
+          tags: ghcr.io/ngtrdai/cpm-ui:latest
+          build-args: |
+            AUTH_SECRET=${{ secrets.UI_AUTH_SECRET }}
+            AUTH_KEYCLOAK_ID=${{ secrets.UI_AUTH_KEYCLOAK_ID }}
+            AUTH_KEYCLOAK_SECRET=${{ secrets.UI_AUTH_KEYCLOAK_SECRET }}
+            AUTH_KEYCLOAK_ISSUER=${{ vars.UI_AUTH_KEYCLOAK_ISSUER }}
