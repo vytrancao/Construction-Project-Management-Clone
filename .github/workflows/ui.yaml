@@ -15,19 +15,19 @@ jobs:
         with:
           fetch-depth: 0
       - name: Login to the Container registry
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.TOKEN }}
       - name: Build and push Docker Images
-        if: ${{ github.ref == 'refs/heads/master' }}
+        if: ${{ github.ref == 'refs/heads/main' }}
         uses: docker/build-push-action@v3
         with:
           context: ./ui
           push: true
-          tags: ghcr.io/ngtrdai/cpm-ui:latest
+          tags: ghcr.io/weed1210/cpm-ui:latest
           build-args: |
             AUTH_SECRET=${{ secrets.UI_AUTH_SECRET }}
             AUTH_KEYCLOAK_ID=${{ secrets.UI_AUTH_KEYCLOAK_ID }}
