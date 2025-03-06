@@ -21,7 +21,7 @@ fi
 
 # Replace domain placeholders in the selected Nginx configuration template with actual values
 echo "Replacing domain placeholders in Nginx configuration..."
-# envsubst '${API_DOMAIN} ${UI_DOMAIN} ${ADDIN_DOMAIN} ${NGINX_HTTP_PORT} ${NGINX_HTTPS_PORT}' < $NGINX_TEMPLATE_PATH > /etc/nginx/conf.d/nginx.conf
+envsubst '' < $NGINX_TEMPLATE_PATH > /etc/nginx/conf.d/nginx.conf
 
 # Ensure the user directive is not present in /etc/nginx/conf.d/nginx.conf
 sed -i '/user/d' /etc/nginx/conf.d/nginx.conf

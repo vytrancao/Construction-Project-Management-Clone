@@ -1,26 +1,25 @@
 services:
   web:
-    # container_name: cpm_nginx
-    # build:
-    #   context: ./nginx
-    #   dockerfile: Dockerfile
-    # volumes:
-    #   - ./nginx/configuration:/etc/nginx/configuration
-    #   - ./nginx/letsencrypt:/etc/nginx/letsencrypt
-    #   - ./nginx/scripts:/etc/nginx/scripts
-    #   - ./nginx/templates:/etc/nginx/templates
-    # ports:
-    #   - "80:80"
-    # networks:
-    #   - cpm_network
-    # command: ["/bin/sh", "-c", "/start-nginx.sh"]
-    image: nginx
+    container_name: cpm_nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
     volumes:
+      - ./nginx/configuration:/etc/nginx/configuration
+      - ./nginx/letsencrypt:/etc/nginx/letsencrypt
       - ./nginx/templates:/etc/nginx/templates
     ports:
       - "80:80"
     networks:
       - cpm_network
+    command: ["/bin/sh", "-c", "/start-nginx.sh"]
+    # image: nginx
+    # volumes:
+    #   - ./nginx/templates:/etc/nginx/templates
+    # ports:
+    #   - "80:80"
+    # networks:
+    #   - cpm_network
     depends_on:
       - keycloak
       - idp_service
