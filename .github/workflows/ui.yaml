@@ -29,7 +29,7 @@ jobs:
           push: true
           tags: ghcr.io/weed1210/cpm-ui:latest
           build-args: |
-            NEXTAUTH_SECRET=${{ secrets.UI_AUTH_SECRET }}
+            AUTH_SECRET=${{ secrets.UI_AUTH_SECRET }}
             AUTH_KEYCLOAK_ID=${{ secrets.UI_AUTH_KEYCLOAK_ID }}
             AUTH_KEYCLOAK_SECRET=${{ secrets.UI_AUTH_KEYCLOAK_SECRET }}
             AUTH_KEYCLOAK_ISSUER=${{ vars.UI_AUTH_KEYCLOAK_ISSUER }}

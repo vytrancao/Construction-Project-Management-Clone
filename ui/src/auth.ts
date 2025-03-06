@@ -30,7 +30,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   experimental: { enableWebAuthn: true },
   trustHost: true,
-  secret: "gbBL1r2qFJ80R+/BQdWqe5McYyU52P4DrLnOqbQy580=",
+  // secret: "gbBL1r2qFJ80R+/BQdWqe5McYyU52P4DrLnOqbQy580=",
 })
 
 declare module "next-auth" {
