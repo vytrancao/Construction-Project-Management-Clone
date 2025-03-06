@@ -29,6 +29,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
   },
   experimental: { enableWebAuthn: true },
+  trustHost: true,
 })
 
 declare module "next-auth" {
