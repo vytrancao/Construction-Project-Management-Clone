@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cpm-ui-deployment
+spec:
+  type: NodePort  # Change from NodePort to LoadBalancer
+  selector:
+    app: cpm-ui
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 31483

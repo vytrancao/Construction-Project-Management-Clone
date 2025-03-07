@@ -33,3 +33,4 @@ jobs:
             AUTH_KEYCLOAK_ID=${{ secrets.UI_AUTH_KEYCLOAK_ID }}
             AUTH_KEYCLOAK_SECRET=${{ secrets.UI_AUTH_KEYCLOAK_SECRET }}
             AUTH_KEYCLOAK_ISSUER=${{ vars.UI_AUTH_KEYCLOAK_ISSUER }}
+            NEXTAUTH_URL=${{ vars.UI_NEXTAUTH_URL }}

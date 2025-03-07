@@ -5,7 +5,7 @@ metadata:
   labels:
     app: com-ui
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: cpm-ui
@@ -16,6 +16,8 @@ spec:
     spec:
       containers:
       - name: cpm-ui
-        image: ghcr.io/weed1210/cpm-ui:latest
+        # image: ghcr.io/weed1210/cpm-ui:latest
+        image: construction-project-management-clone-ui
+        imagePullPolicy: Never
       imagePullSecrets:
       - name: regcred
