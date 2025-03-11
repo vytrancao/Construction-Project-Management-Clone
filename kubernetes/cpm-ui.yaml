@@ -1,0 +1,37 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cpm-ui-deployment
+spec:
+  type: NodePort  # Change from NodePort to LoadBalancer
+  selector:
+    app: cpm-ui
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+      nodePort: 31483
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cpm-ui-deployment
+  labels:
+    app: com-ui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cpm-ui
+  template:
+    metadata:
+      labels:
+        app: cpm-ui
+    spec:
+      containers:
+      - name: cpm-ui
+        image: ghcr.io/weed1210/cpm-ui:latest
+        # image: construction-project-management-clone-ui
+        # imagePullPolicy: Never
+      imagePullSecrets:
+      - name: regcred

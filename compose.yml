@@ -1,28 +1,28 @@
 services:
-  web:
-    container_name: cpm_nginx
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
-    volumes:
-      - ./nginx/configuration:/etc/nginx/configuration
-      - ./nginx/letsencrypt:/etc/nginx/letsencrypt
-      - ./nginx/templates:/etc/nginx/templates
-    ports:
-      - "80:80"
-    networks:
-      - cpm_network
-    command: ["/bin/sh", "-c", "/start-nginx.sh"]
-    # image: nginx
-    # volumes:
-    #   - ./nginx/templates:/etc/nginx/templates
-    # ports:
-    #   - "80:80"
-    # networks:
-    #   - cpm_network
-    depends_on:
-      - keycloak
-      - idp_service
+  # web:
+  #   container_name: cpm_nginx
+  #   build:
+  #     context: ./nginx
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - ./nginx/configuration:/etc/nginx/configuration
+  #     - ./nginx/letsencrypt:/etc/nginx/letsencrypt
+  #     - ./nginx/templates:/etc/nginx/templates
+  #   ports:
+  #     - "80:80"
+  #   networks:
+  #     - cpm_network
+  #   command: ["/bin/sh", "-c", "/start-nginx.sh"]
+  #   # image: nginx
+  #   # volumes:
+  #   #   - ./nginx/templates:/etc/nginx/templates
+  #   # ports:
+  #   #   - "80:80"
+  #   # networks:
+  #   #   - cpm_network
+  #   depends_on:
+  #     - keycloak
+  #     - idp_service
 
   keycloak:
     container_name: cpm_keycloak
@@ -52,7 +52,7 @@ services:
       service: db
     container_name: cpm_keycloak_db
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_keycloak_data:/var/lib/postgresql/data
 
@@ -81,23 +81,23 @@ services:
     networks:
     - cpm_network
 
-  ui:
-    build:
-      context: ./ui
-      dockerfile: Dockerfile
-      args:
-        - AUTH_SECRET="gbBL1r2qFJ80R+/BQdWqe5McYyU52P4DrLnOqbQy580=" # Added by `npx auth`. Read more: https://cli.authjs.dev
-        - AUTH_KEYCLOAK_ID=security-admin-console
-        # - AUTH_KEYCLOAK_SECRET=s6FokfrwAUixEVjzTHMBoBFxNF3niwva
-        - AUTH_KEYCLOAK_SECRET=VYumVR2aR7gtMDRASsLjWrxGhcasHMMH
-        # - AUTH_KEYCLOAK_ISSUER=http://192.168.1.6:8080/realms/cpm
-        - AUTH_KEYCLOAK_ISSUER=http://192.168.49.2:31284/realms/cpm
-        - NEXTAUTH_URL=http://192.168.49.2:31483/
-    container_name: cpm_ui
-    ports:
-      - "3001:3000"
-    networks:
-      - cpm_network
+#   ui:
+#     build:
+#       context: ./ui
+#       dockerfile: Dockerfile
+#       args:
+#         - AUTH_SECRET="gbBL1r2qFJ80R+/BQdWqe5McYyU52P4DrLnOqbQy580=" # Added by `npx auth`. Read more: https://cli.authjs.dev
+#         - AUTH_KEYCLOAK_ID=security-admin-console
+#         # - AUTH_KEYCLOAK_SECRET=s6FokfrwAUixEVjzTHMBoBFxNF3niwva
+#         - AUTH_KEYCLOAK_SECRET=VYumVR2aR7gtMDRASsLjWrxGhcasHMMH
+#         # - AUTH_KEYCLOAK_ISSUER=http://192.168.1.6:8080/realms/cpm
+#         - AUTH_KEYCLOAK_ISSUER=http://192.168.49.2:31284/realms/cpm
+#         - NEXTAUTH_URL=http://192.168.49.2:31483/
+#     container_name: cpm_ui
+#     ports:
+#       - "3001:3000"
+#     networks:
+#       - cpm_network
 
 networks:
   cpm_network:

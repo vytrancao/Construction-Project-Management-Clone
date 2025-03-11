@@ -1,37 +1,37 @@
-import NextAuth from "next-auth"
-import Keycloak from "next-auth/providers/keycloak"
-import "next-auth/jwt"
+import NextAuth from "next-auth";
+import Keycloak from "next-auth/providers/keycloak";
+import "next-auth/jwt";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   debug: !!process.env.AUTH_DEBUG,
   providers: [
-    Keycloak({ clientId: process.env.AUTH_KEYCLOAK_ID!, clientSecret: process.env.AUTH_KEYCLOAK_SECRET! }),
+    Keycloak,
   ],
   basePath: "/auth",
   session: { strategy: "jwt" },
   callbacks: {
     authorized({ request, auth }) {
-      const { pathname } = request.nextUrl
-      if (pathname === "/middleware-example") return !!auth
-      return true
+      const { pathname } = request.nextUrl;
+      if (pathname === "/middleware-example") return !!auth;
+      return true;
     },
     jwt({ token, trigger, session, account }) {
-      if (trigger === "update") token.name = session.user.name
+      if (trigger === "update") token.name = session.user.name;
       if (account?.provider === "keycloak") {
-        return { ...token, accessToken: account.access_token }
+        return { ...token, accessToken: account.access_token };
       }
-      return token
+      return token;
     },
     async session({ session, token }) {
-      if (token?.accessToken) session.accessToken = token.accessToken
+      if (token?.accessToken) session.accessToken = token.accessToken;
 
-      return session
+      return session;
     },
   },
   experimental: { enableWebAuthn: true },
   trustHost: true,
   secret: process.env.AUTH_SECRET,
-})
+});
 
 declare module "next-auth" {
   interface Session {
