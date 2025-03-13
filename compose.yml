@@ -24,37 +24,37 @@ services:
   #     - keycloak
   #     - idp_service
 
-  keycloak:
-    container_name: cpm_keycloak
-    build:
-      context: ./keycloak
-      dockerfile: Dockerfile
-    command: ["start-dev"]  
-    ports:  
-      - 8080:8080
-    environment:
-      - KC_PROXY_ADDRESS_FORWARDING=true
-      - KC_HTTP_ENABLED=true
-      - REDIRECT_SOCKET=proxy-https
-      - KEYCLOAK_ADMIN=admin  
-      - KEYCLOAK_ADMIN_PASSWORD=admin
-      - KC_DB=postgres  
-      - KC_DB_USERNAME=${DB_USER}  
-      - KC_DB_PASSWORD=${DB_PASSWORD}  
-      - KC_DB_URL=jdbc:postgresql://keycloak_db:${DB_PORT}/${DB_NAME}
-    depends_on:   
-      - keycloak_db
-    networks:  
-      - cpm_network
-  keycloak_db:
-    extends:
-      file: common.yml
-      service: db
-    container_name: cpm_keycloak_db
-    ports:
-      - "5433:5432"
-    volumes:
-      - postgres_keycloak_data:/var/lib/postgresql/data
+  # keycloak:
+  #   container_name: cpm_keycloak
+  #   build:
+  #     context: ./keycloak
+  #     dockerfile: Dockerfile
+  #   command: ["start-dev"]  
+  #   ports:  
+  #     - 8080:8080
+  #   environment:
+  #     - KC_PROXY_ADDRESS_FORWARDING=true
+  #     - KC_HTTP_ENABLED=true
+  #     - REDIRECT_SOCKET=proxy-https
+  #     - KEYCLOAK_ADMIN=admin  
+  #     - KEYCLOAK_ADMIN_PASSWORD=admin
+  #     - KC_DB=postgres  
+  #     - KC_DB_USERNAME=${DB_USER}  
+  #     - KC_DB_PASSWORD=${DB_PASSWORD}  
+  #     - KC_DB_URL=jdbc:postgresql://keycloak_db:${DB_PORT}/${DB_NAME}
+  #   depends_on:   
+  #     - keycloak_db
+  #   networks:  
+  #     - cpm_network
+  # keycloak_db:
+  #   extends:
+  #     file: common.yml
+  #     service: db
+  #   container_name: cpm_keycloak_db
+  #   ports:
+  #     - "5433:5432"
+  #   volumes:
+  #     - postgres_keycloak_data:/var/lib/postgresql/data
 
   idp_service:
     container_name: cpm_idp_service

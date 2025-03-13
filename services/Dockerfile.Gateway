@@ -1,0 +1,27 @@
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS base
+USER $APP_UID
+WORKDIR /app
+EXPOSE 8080
+EXPOSE 8081
+
+FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
+WORKDIR /src
+
+COPY ./Gateway/Gateway/Gateway.csproj ./Gateway/
+RUN dotnet restore ./Gateway/Gateway.csproj
+
+COPY ./Gateway ./
+WORKDIR /src
+RUN dotnet build Gateway/Gateway.csproj -c Prod -o /app/build
+
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish Gateway/Gateway.csproj -c Prod -o /app/publish /p:UseAppHost=false
+
+ENV DOTNET_WATCH_RESTART_ON_CHANGE Always
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENV ASPNETCORE_HTTP_PORTS=8000
+ENTRYPOINT ["dotnet", "Gateway.dll"]

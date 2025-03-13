@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 public class AuthenticationController(IKeycloakClient keycloakClient) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult> RegisterPrototype()
+    public async Task<IActionResult> RegisterPrototype()
     {
         var request = new RegisterUserRequest
         {
@@ -34,5 +34,11 @@ public class AuthenticationController(IKeycloakClient keycloakClient) : Controll
 
         var res = await keycloakClient.RegisterUser(request);
         return Ok(await res.Content.ReadAsStringAsync());
+    }
+
+    [HttpGet("hello")]
+    public IActionResult HelloWorld()
+    {
+        return Ok("Hello World");
     }
 }

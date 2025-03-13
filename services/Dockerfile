@@ -23,7 +23,6 @@ ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish Api/Api.csproj -c Prod -o /app/publish /p:UseAppHost=false
 
 ENV DOTNET_WATCH_RESTART_ON_CHANGE Always
-ENV ASPNETCORE_ENVIRONMENT=Production
 
 FROM base AS final
 WORKDIR /app
