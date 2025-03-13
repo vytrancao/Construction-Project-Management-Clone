@@ -27,5 +27,4 @@ ENV DOTNET_WATCH_RESTART_ON_CHANGE Always
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENV ASPNETCORE_HTTP_PORTS=8000
 ENTRYPOINT ["dotnet", "Api.dll"]

@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: keycloak
 spec:
-  type: NodePort  # Change from NodePort to LoadBalancer
+  type: NodePort
   selector:
     app: keycloak
   ports:
@@ -55,7 +55,3 @@ spec:
         ports:
           - name: http
             containerPort: 8080
-        # readinessProbe:
-        #   httpGet:
-        #     path: /health/ready
-        #     port: 9000

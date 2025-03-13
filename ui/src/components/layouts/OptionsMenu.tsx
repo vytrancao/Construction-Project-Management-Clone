@@ -11,6 +11,7 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import MoreVertRoundedIcon from '@mui/icons-material/MoreVertRounded';
 import MenuButton from './MenuButton';
 import { useRouter } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 
 const MenuItem = styled(MuiMenuItem)({
   margin: '2px 0',
@@ -21,6 +22,7 @@ const OptionsMenu: React.FC = () => {
   const router = useRouter();
 
   const onLogout = async () => {
+    await signOut();
     const res = await fetch('/auth/logout', {
       method: 'POST',
       headers: {
@@ -28,6 +30,7 @@ const OptionsMenu: React.FC = () => {
       },
     });
     const path = (await res.json()).path;
+    console.log(path);
     router.push(path);
   };
 
@@ -84,7 +87,7 @@ const OptionsMenu: React.FC = () => {
             },
           }}
         >
-          <ListItemText onClick={async () => await onLogout()}>Logout</ListItemText>
+          <ListItemText onClick={onLogout}>Logout</ListItemText>
           <ListItemIcon>
             <LogoutRoundedIcon fontSize="small"/>
           </ListItemIcon>

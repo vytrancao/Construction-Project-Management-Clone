@@ -24,37 +24,24 @@ services:
   #     - keycloak
   #     - idp_service
 
-  # keycloak:
-  #   container_name: cpm_keycloak
-  #   build:
-  #     context: ./keycloak
-  #     dockerfile: Dockerfile
-  #   command: ["start-dev"]  
-  #   ports:  
-  #     - 8080:8080
-  #   environment:
-  #     - KC_PROXY_ADDRESS_FORWARDING=true
-  #     - KC_HTTP_ENABLED=true
-  #     - REDIRECT_SOCKET=proxy-https
-  #     - KEYCLOAK_ADMIN=admin  
-  #     - KEYCLOAK_ADMIN_PASSWORD=admin
-  #     - KC_DB=postgres  
-  #     - KC_DB_USERNAME=${DB_USER}  
-  #     - KC_DB_PASSWORD=${DB_PASSWORD}  
-  #     - KC_DB_URL=jdbc:postgresql://keycloak_db:${DB_PORT}/${DB_NAME}
-  #   depends_on:   
-  #     - keycloak_db
-  #   networks:  
-  #     - cpm_network
-  # keycloak_db:
-  #   extends:
-  #     file: common.yml
-  #     service: db
-  #   container_name: cpm_keycloak_db
-  #   ports:
-  #     - "5433:5432"
-  #   volumes:
-  #     - postgres_keycloak_data:/var/lib/postgresql/data
+  keycloak:
+    container_name: cpm_keycloak
+    image: quay.io/keycloak/keycloak:latest
+    command: ["start-dev"]  
+    ports:  
+      - 8080:8080
+    environment:
+      - KC_PROXY_ADDRESS_FORWARDING=true
+      - KC_HTTP_ENABLED=true
+      - REDIRECT_SOCKET=proxy-https
+      - KEYCLOAK_ADMIN=admin  
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+      - KC_DB=postgres  
+      - KC_DB_USERNAME=${DB_USER}  
+      - KC_DB_PASSWORD=${DB_PASSWORD}  
+      - KC_DB_URL=jdbc:postgresql://192.168.1.6:5432/keycloak
+    networks:  
+      - cpm_network
 
   idp_service:
     container_name: cpm_idp_service
@@ -62,13 +49,27 @@ services:
       context: ./services
       dockerfile: Dockerfile
       args:
-        - BASE_API_URL=http://api.cpm.com
         - SERVICE_NAME=Identity
-        - KEYCLOAK_URL=http://localhost:8080
+        # - Keycloak__realm=cpm
+        # - Keycloak__auth-server-url=http://192.168.49.2:31284
+        # - Keycloak__ssl-required=none
+        # - Keycloak__resource=security-admin-console
+        # - Keycloak__verify-token-audience=false
+        # - Keycloak__credentials__secret=s6FokfrwAUixEVjzTHMBoBFxNF3niwva
+        # - Keycloak__confidential-port=0
     ports:
-      - "3000:8000"
+      - "3000:8080"
     networks:
       - cpm_network
+    environment:
+      - SERVICE_NAME=Identity
+      - Keycloak__realm=cpm
+      - Keycloak__auth-server-url=http://192.168.1.6:8080
+      - Keycloak__ssl-required=none
+      - Keycloak__resource=security-admin-console
+      - Keycloak__verify-token-audience=false
+      - Keycloak__credentials__secret=s6FokfrwAUixEVjzTHMBoBFxNF3niwva
+      - Keycloak__confidential-port=0
 
   cache:
     image: redis:alpine

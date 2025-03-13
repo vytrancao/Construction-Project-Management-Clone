@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: cpm-ui-deployment
+  name: cpm-ui
 spec:
   type: NodePort  # Change from NodePort to LoadBalancer
   selector:
@@ -15,7 +15,7 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cpm-ui-deployment
+  name: cpm-ui
   labels:
     app: com-ui
 spec:
@@ -31,7 +31,5 @@ spec:
       containers:
       - name: cpm-ui
         image: ghcr.io/weed1210/cpm-ui:latest
-        # image: construction-project-management-clone-ui
-        # imagePullPolicy: Never
       imagePullSecrets:
-      - name: regcred
+      - name: ghcr
