@@ -28,6 +28,4 @@ jobs:
           context: ./services
           file: ./services/Dockerfile.Gateway
           push: true
-          tags: ghcr.io/weed1210/cpm-identity-service:latest
-          build-args: |
-            SERVICE_NAME=Identity
+          tags: ghcr.io/weed1210/cpm-api-gateway:latest
