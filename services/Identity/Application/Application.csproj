@@ -7,13 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Refit" Version="8.0.0" />
+      <PackageReference Include="Keycloak.AuthServices.Sdk" Version="2.6.1" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Extensions\" />
-      <Folder Include="Models\Keycloak\Responses\" />
-      <Folder Include="Services\" />
+        <Folder Include="Extensions\"/>
+        <Folder Include="Models\Keycloak\Responses\"/>
+        <Folder Include="Services\"/>
     </ItemGroup>
 
 </Project>

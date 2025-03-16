@@ -1,8 +1,6 @@
 services:
   db:
     image: postgres:15-alpine
-    labels:
-      - "com.centurylinklabs.watchtower.enable=false"
     environment:
       - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}

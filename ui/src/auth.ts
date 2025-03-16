@@ -17,6 +17,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     },
     jwt({ token, trigger, session, account }) {
       if (trigger === "update") token.name = session.user.name;
+      console.log("token: ", token);
+      console.log("account: ", account);
       if (account?.provider === "keycloak") {
         return { ...token, accessToken: account.access_token };
       }

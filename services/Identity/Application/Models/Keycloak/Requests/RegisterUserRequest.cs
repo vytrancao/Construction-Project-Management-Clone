@@ -1,6 +1,8 @@
 namespace Application.Models.Keycloak.Requests;
 
-public class RegisterUserRequest
+using global::Keycloak.AuthServices.Sdk.Admin.Models;
+
+public class RegisterUserRequest : UserRepresentation
 {
     public string Username { get; set; }
     public string Email { get; set; }
