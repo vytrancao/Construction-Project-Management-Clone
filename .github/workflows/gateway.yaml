@@ -28,4 +28,4 @@ jobs:
           context: ./services
           file: ./services/Dockerfile.Gateway
           push: true
-          tags: ghcr.io/weed1210/cpm-api-gateway:latest
+          tags: ghcr.io/vytrancao/cpm-api-gateway:latest

@@ -27,6 +27,6 @@ jobs:
         with:
           context: ./services
           push: true
-          tags: ghcr.io/weed1210/cpm-identity-service:latest
+          tags: ghcr.io/vytrancao/cpm-identity-service:latest
           build-args: |
             SERVICE_NAME=Identity

@@ -27,7 +27,7 @@ jobs:
         with:
           context: ./ui
           push: true
-          tags: ghcr.io/weed1210/cpm-ui:latest
+          tags: ghcr.io/vytrancao/cpm-ui:latest
           build-args: |
             AUTH_SECRET=${{ secrets.UI_AUTH_SECRET }}
             AUTH_KEYCLOAK_ID=${{ secrets.UI_AUTH_KEYCLOAK_ID }}
