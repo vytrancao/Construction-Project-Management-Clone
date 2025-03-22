@@ -33,7 +33,7 @@ jobs:
 
       - name: Update Versions in All `.csproj` Files
         run: |
-          find Common -name "*.csproj" -exec sed -i 's|<Version>.*</Version>|<Version>'"$NEW_VERSION"'</Version>|' {} \;
+          find . -type f -name "Common.*.csproj" -exec sed -i 's|<Version>.*</Version>|<Version>'"$NEW_VERSION"'</Version>|' {} \;
 
       - name: Commit Version Changes
         run: |

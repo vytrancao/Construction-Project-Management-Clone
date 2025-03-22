@@ -4,6 +4,10 @@
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <Version>1.0.0</Version>
+        <Authors>vytrancao</Authors>
+        <Company>vytrancao</Company>
+        <RepositoryUrl>https://github.com/vytrancao/Construction-Project-Management-Clone</RepositoryUrl>
     </PropertyGroup>
 
 </Project>
