@@ -1,10 +1,10 @@
-name: Publish NuGet Packages
+name: Publish Common NuGet Packages
 
 on:
   push:
     branches: ["main"]
     paths:
-      - "./sevices/Common/**"
+      - "sevices/Common/**"
       - ".github/workflows/common-nuget.yaml"
 
 jobs:
