@@ -24,13 +24,13 @@ jobs:
           NUGET_AUTH_TOKEN: ${{ secrets.TOKEN }}
 
       - name: Restore Dependencies
-        run: dotnet restore Common.sln
+        run: dotnet restore services/Common/Common.sln
 
       - name: Build Solution
-        run: dotnet build Common.sln --configuration Release --no-restore
+        run: dotnet build services/Common/Common.sln --configuration Release --no-restore
 
       - name: Pack NuGet Packages
-        run: dotnet pack Common.sln --configuration Release --output nupkgs --no-restore --no-build
+        run: dotnet pack services/Common/Common.sln --configuration Release --output nupkgs --no-restore --no-build
 
       - name: Publish to GitHub Packages
         run: dotnet nuget push "nupkgs/*.nupkg" --source "github" --api-key ${{ secrets.TOKEN }} --skip-duplicate
