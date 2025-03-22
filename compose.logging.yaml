@@ -1,0 +1,174 @@
+services:
+  logging_master_db:
+    container_name: "logging_db_master"
+    image: mongo:6
+    restart: always
+    volumes:
+      - mongodata1:/data/db
+    expose:
+      - "27017"
+    networks:
+      - logging_network
+    entrypoint: [ "/usr/bin/mongod", "--replSet", "rsmongo", "--bind_ip_all", "--wiredTigerCacheSizeGB", "1"]
+
+  logging_slave_db1:
+    image: mongo:6
+    restart: always
+    container_name: "logging_slave_db1"
+    volumes:
+      - mongodata2:/data/db
+    expose:
+      - "27017"
+    networks:
+      - logging_network
+    entrypoint: [ "/usr/bin/mongod", "--replSet", "rsmongo", "--bind_ip_all", "--wiredTigerCacheSizeGB", "1"]
+      
+  # logging_db_slave2:
+  #   image: mongo:6
+  #   restart: always
+  #   container_name: "logging_db_slave2"
+  #   volumes:
+  #     - mongodata3:/data/db
+  #   expose:
+  #     - "27017"
+  #   networks:
+  #     - logging_network
+  #   entrypoint: [ "/usr/bin/mongod", "--replSet", "rsmongo", "--bind_ip_all", "--wiredTigerCacheSizeGB", "1" ]
+    
+  mongosetup:
+    image: "mongo-setup"
+    build: "./logging"
+    container_name: "mongosetup"
+    depends_on:
+      - logging_master_db
+    networks:
+      - logging_network
+    volumes:
+      - mongostatus:/data/
+
+  # For DataNode setup, graylog starts with a preflight UI, this is a change from just using OpenSearch/Elasticsearch.
+  # Please take a look at the README at the top of this repo or the regular docs for more info.
+  datanode1:
+    image: "${DATANODE_IMAGE:-graylog/graylog-datanode:6.1}"
+    hostname: "datanode1"
+    depends_on:
+      - logging_master_db
+      - logging_slave_db1
+    environment:
+      GRAYLOG_DATANODE_NODE_ID_FILE: "/var/lib/graylog-datanode/node-id"
+      # GRAYLOG_DATANODE_PASSWORD_SECRET and GRAYLOG_PASSWORD_SECRET MUST be the same value
+      GRAYLOG_DATANODE_PASSWORD_SECRET: "${GRAYLOG_PASSWORD_SECRET:?Please configure GRAYLOG_PASSWORD_SECRET in the .env file}"
+      GRAYLOG_DATANODE_MONGODB_URI: "mongodb://logging_master_db:27017,logging_slave_db1:27017/graylog"
+    ulimits:
+      memlock:
+        hard: -1
+        soft: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    ports:
+      - "8999:8999/tcp"   # DataNode API
+    volumes:
+      - "graylog-datanode-01:/var/lib/graylog-datanode"
+    networks:
+      - logging_network
+    restart: "on-failure"
+
+  # For DataNode setup, graylog starts with a preflight UI, this is a change from just using OpenSearch/Elasticsearch.
+  # Please take a look at the README at the top of this repo or the regular docs for more info.
+  # datanode2:
+  #   image: "${DATANODE_IMAGE:-graylog/graylog-datanode:6.1}"
+  #   hostname: "datanode2"
+  #   depends_on:
+  #     - "mongodb1"
+  #     - "mongodb2"
+  #     - "mongodb3"
+  #   environment:
+  #     GRAYLOG_DATANODE_NODE_ID_FILE: "/var/lib/graylog-datanode/node-id"
+  #     # GRAYLOG_DATANODE_PASSWORD_SECRET and GRAYLOG_PASSWORD_SECRET MUST be the same value
+  #     GRAYLOG_DATANODE_PASSWORD_SECRET: "${GRAYLOG_PASSWORD_SECRET:?Please configure GRAYLOG_PASSWORD_SECRET in the .env file}"
+  #     GRAYLOG_DATANODE_MONGODB_URI: "mongodb://mongodb1:27017,mongodb2:27017,mongodb3:27017/graylog"
+  #   ulimits:
+  #     memlock:
+  #       hard: -1
+  #       soft: -1
+  #     nofile:
+  #       soft: 65536
+  #       hard: 65536
+  #   ports:
+  #     - "8998:8999/tcp"   # DataNode API
+  #   volumes:
+  #     - "graylog-datanode-02:/var/lib/graylog-datanode"
+  #   networks:
+  #     - logging_network
+  #   restart: "on-failure"
+
+  # For DataNode setup, graylog starts with a preflight UI, this is a change from just using OpenSearch/Elasticsearch.
+  # Please take a look at the README at the top of this repo or the regular docs for more info.
+  # datanode3:
+  #   image: "${DATANODE_IMAGE:-graylog/graylog-datanode:6.1}"
+  #   hostname: "datanode3"
+  #   depends_on:
+  #     - "mongodb1"
+  #     - "mongodb2"
+  #     - "mongodb3"
+  #   environment:
+  #     GRAYLOG_DATANODE_NODE_ID_FILE: "/var/lib/graylog-datanode/node-id"
+  #     # GRAYLOG_DATANODE_PASSWORD_SECRET and GRAYLOG_PASSWORD_SECRET MUST be the same value
+  #     GRAYLOG_DATANODE_PASSWORD_SECRET: "${GRAYLOG_PASSWORD_SECRET:?Please configure GRAYLOG_PASSWORD_SECRET in the .env file}"
+  #     GRAYLOG_DATANODE_MONGODB_URI: "mongodb://mongodb1:27017,mongodb2:27017,mongodb3:27017/graylog"
+  #   ulimits:
+  #     memlock:
+  #       hard: -1
+  #       soft: -1
+  #     nofile:
+  #       soft: 65536
+  #       hard: 65536
+  #   ports:
+  #     - "8997:8999/tcp"   # DataNode API
+  #   volumes:
+  #     - "graylog-datanode-03:/var/lib/graylog-datanode"
+  #   networks:
+  #     - logging_network
+  #   restart: "on-failure"
+
+  graylog1:
+    image: "${GRAYLOG_IMAGE:-graylog/graylog:6.1}"
+    hostname: "graylog1"
+    depends_on:
+      - logging_master_db
+      - logging_slave_db1
+    entrypoint: "/docker-entrypoint.sh"
+    environment:
+      GRAYLOG_IS_LEADER: "true"
+      GRAYLOG_NODE_ID_FILE: "/usr/share/graylog/data/data/node-id"
+      # GRAYLOG_DATANODE_PASSWORD_SECRET and GRAYLOG_PASSWORD_SECRET MUST be the same value
+      GRAYLOG_PASSWORD_SECRET: "${GRAYLOG_PASSWORD_SECRET:?Please configure GRAYLOG_PASSWORD_SECRET in the .env file}"
+      GRAYLOG_ROOT_PASSWORD_SHA2: "${GRAYLOG_ROOT_PASSWORD_SHA2:?Please configure GRAYLOG_ROOT_PASSWORD_SHA2 in the .env file}"
+      GRAYLOG_HTTP_EXTERNAL_URI: "http://127.0.0.1:9000/"
+      GRAYLOG_MONGODB_URI: "mongodb://logging_master_db:27017,logging_slave_db1:27017/graylog"
+    ports:
+      - "9000:9000"        # Graylog web interface and REST API
+      - "1514:1514"        # Syslog TCP
+      - "1514:1514/udp"    # Syslog UDP
+      - "12201:12201"      # GELF TCP
+      - "12201:12201/udp"  # GELF UDP
+    volumes:
+      - "graylog-data-01:/usr/share/graylog/data/data"
+      - "graylog-journal-01:/usr/share/graylog/data/journal"
+    networks:
+      - logging_network
+    restart: "on-failure"
+
+networks:
+  logging_network:
+    name: cpm_network
+    external: true
+
+volumes:
+  graylog-data-01:
+  graylog-datanode-01:
+  graylog-journal-01:
+  mongodata1:
+  mongodata2:
+  mongostatus:

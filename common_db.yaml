@@ -1,0 +1,47 @@
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      retries: 5
+      timeout: 5s
+
+  master_db:
+    extends:
+      service: db
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=md5
+    volumes:
+      - ./postgres_ha/scripts/master/init.sh:/docker-entrypoint-initdb.d/init.sh
+
+  slave_db:
+    extends:
+      service: db
+    environment:
+      - REPLICATION_SLOT=slave_1
+      - PGPASSWORD=${DB_PASSWORD}
+    volumes:
+      - ./postgres_ha/scripts/slave/entrypoint.sh:/entrypoint.sh
+    command: ["/bin/sh", "/entrypoint.sh"]
+  
+  pgpool:
+    image: bitnami/pgpool:4
+    environment:
+      - PGPOOL_BACKEND_NODES=0:master_db:5432,1:slave_db1:5432,2:slave_db2:5432
+      - PGPOOL_SR_CHECK_USER=postgres
+      - PGPOOL_SR_CHECK_PASSWORD=121002
+      - PGPOOL_ENABLE_LDAP=no
+      - PGPOOL_POSTGRES_USERNAME=postgres
+      - PGPOOL_POSTGRES_PASSWORD=121002
+      - PGPOOL_ADMIN_USERNAME=postgres
+      - PGPOOL_ADMIN_PASSWORD=121002
+    healthcheck:
+      test: ["CMD", "/opt/bitnami/scripts/pgpool/healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 5

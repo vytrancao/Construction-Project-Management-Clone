@@ -29,7 +29,7 @@ services:
     image: quay.io/keycloak/keycloak:latest
     command: ["start-dev"]  
     ports:  
-      - 8080:8080
+      - 3000:8080
     environment:
       - KC_PROXY_ADDRESS_FORWARDING=true
       - KC_HTTP_ENABLED=true
@@ -39,70 +39,66 @@ services:
       - KC_DB=postgres  
       - KC_DB_USERNAME=${DB_USER}  
       - KC_DB_PASSWORD=${DB_PASSWORD}  
-      - KC_DB_URL=jdbc:postgresql://192.168.1.6:5432/keycloak
+      - KC_DB_URL=jdbc:postgresql://${LOCALHOST_IP}:${DB_PORT}/${KEYCLOAK_DB_NAME}
     networks:  
       - cpm_network
 
-  idp_service:
-    container_name: cpm_idp_service
-    build:
-      context: ./services
-      dockerfile: Dockerfile
-      args:
-        - SERVICE_NAME=Identity
-        # - Keycloak__realm=cpm
-        # - Keycloak__auth-server-url=http://192.168.49.2:31284
-        # - Keycloak__ssl-required=none
-        # - Keycloak__resource=security-admin-console
-        # - Keycloak__verify-token-audience=false
-        # - Keycloak__credentials__secret=s6FokfrwAUixEVjzTHMBoBFxNF3niwva
-        # - Keycloak__confidential-port=0
+  # cpm_ui:
+  #   container_name: cpm_ui
+  #   build:
+  #     context: ./ui
+  #     dockerfile: Dockerfile
+  #     args:
+  #       - AUTH_SECRET="gbBL1r2qFJ80R+/BQdWqe5McYyU52P4DrLnOqbQy580=" # Added by `npx auth`. Read more: https://cli.authjs.dev
+  #       - AUTH_KEYCLOAK_ID=security-admin-console
+  #       - AUTH_KEYCLOAK_SECRET=VYumVR2aR7gtMDRASsLjWrxGhcasHMMH
+  #       - AUTH_KEYCLOAK_ISSUER=http://192.168.49.2:31284/realms/cpm
+  #       - NEXTAUTH_URL=http://192.168.49.2:31483/
+  #   ports:
+  #     - "3001:3000"
+  #   networks:
+  #     - cpm_network
+  kafka:
+    image: apache/kafka-native
     ports:
-      - "3000:8080"
-    networks:
-      - cpm_network
+      - "3001:9092"
     environment:
-      - SERVICE_NAME=Identity
-      - Keycloak__realm=cpm
-      - Keycloak__auth-server-url=http://192.168.1.6:8080
-      - Keycloak__ssl-required=none
-      - Keycloak__resource=security-admin-console
-      - Keycloak__verify-token-audience=false
-      - Keycloak__credentials__secret=s6FokfrwAUixEVjzTHMBoBFxNF3niwva
-      - Keycloak__confidential-port=0
+      # Configure listeners for both docker and host communication
+      KAFKA_LISTENERS: CONTROLLER://localhost:9091,HOST://0.0.0.0:9092,DOCKER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: HOST://localhost:3001,DOCKER://kafka:9093
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,DOCKER:PLAINTEXT,HOST:PLAINTEXT
 
-  cache:
-    image: redis:alpine
-    restart: always
+      # Settings required for KRaft mode
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9091
+      # Listener to use for broker-to-broker communication
+      KAFKA_INTER_BROKER_LISTENER_NAME: DOCKER
+      # Required for a single node cluster
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:  
+      - cpm_network
+
+  kafka-ui:
+    image: ghcr.io/kafbat/kafka-ui:latest
+    logging:
+      driver: none
     ports:
-      - '6379:6379'
-    command: redis-server --loglevel warning
-    healthcheck:
-      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
-    networks:
-    - cpm_network
-
-#   ui:
-#     build:
-#       context: ./ui
-#       dockerfile: Dockerfile
-#       args:
-#         - AUTH_SECRET="gbBL1r2qFJ80R+/BQdWqe5McYyU52P4DrLnOqbQy580=" # Added by `npx auth`. Read more: https://cli.authjs.dev
-#         - AUTH_KEYCLOAK_ID=security-admin-console
-#         # - AUTH_KEYCLOAK_SECRET=s6FokfrwAUixEVjzTHMBoBFxNF3niwva
-#         - AUTH_KEYCLOAK_SECRET=VYumVR2aR7gtMDRASsLjWrxGhcasHMMH
-#         # - AUTH_KEYCLOAK_ISSUER=http://192.168.1.6:8080/realms/cpm
-#         - AUTH_KEYCLOAK_ISSUER=http://192.168.49.2:31284/realms/cpm
-#         - NEXTAUTH_URL=http://192.168.49.2:31483/
-#     container_name: cpm_ui
-#     ports:
-#       - "3001:3000"
-#     networks:
-#       - cpm_network
+      - 3002:8080
+    environment:
+      DYNAMIC_CONFIG_ENABLED: "true"
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9093
+    depends_on:
+      - kafka
+    networks:  
+      - cpm_network
 
 networks:
   cpm_network:
-    driver: bridge
+    name: cpm_network
+    external: true
 
 volumes:
   postgres_keycloak_data:

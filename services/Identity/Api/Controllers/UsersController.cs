@@ -1,56 +1,41 @@
 namespace Api;
 
+using Application.Contracts.User;
 using Application.Models.User;
+using Domain.Entities;
 using Domain.Enums;
-using Keycloak.AuthServices.Sdk.Admin;
-using Keycloak.AuthServices.Sdk.Admin.Models;
-using Microsoft.AspNetCore.Authorization;
+using MassTransit;
+using MassTransit.Mediator;
 using Microsoft.AspNetCore.Mvc;
 
 [Route("[controller]")]
 [ApiController]
-public class UsersController(IKeycloakClient keycloakClient, IConfiguration configuration) : ControllerBase
+public class UsersController(
+    ITopicProducer<UserCreateRequest> producer,
+    IMediator mediator,
+    ILogger<UsersController> logger) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetUserAsync()
+    public async Task<ActionResult> GetAsync()
     {
-        var realm = configuration["Keycloak:realm"];
-        var users = await keycloakClient.GetUsersAsync(realm);
-        return Ok(users);
+        producer.Produce(new UserCreateRequest(
+            Email: "h",
+            FirstName: "h",
+            LastName: "h",
+            Role: UserRole.Admin,
+            Password: "h"
+        ));
+
+        return Ok();
     }
 
     [HttpPost]
-    // [Authorize(Roles = "Admin")]
-    public async Task<IActionResult> RegisterAsync()
+    public async Task<ActionResult> RegisterAsync([FromBody] UserCreateRequest request)
     {
-        var realm = configuration["Keycloak:realm"];
-        var newUser = new User
-        {
-            Username = "vy",
-            Email = "4@gmail.com",
-            Enabled = true,
-            FirstName = "Vy",
-            LastName = "Tran",
-            Credentials =
-            [
-                new CredentialRepresentation
-                {
-                    Type = "password",
-                    Value = "admin",
-                    Temporary = false
-                }
-            ],
-            ClientRoles = new Dictionary<string, ICollection<string>> { ["security-admin-console"] = [nameof(UserRoles.Admin)] }
-        };
-        var response = await keycloakClient.CreateUserWithResponseAsync(realm, newUser);
-        var content = response.Content.ReadAsStringAsync();
-        var header = response.Headers.First(x => x.Key == "Location");
-        var uri = new Uri(header.Value.First());
-        var userId = uri.Segments.Last().Trim('/');
-        // keycloakClient.User
-        var groups = await keycloakClient.GetGroupsAsync("cpm");
-        var adminGroups = groups.First(x => x.Name == nameof(UserRoles.Admin));
-        await keycloakClient.JoinGroupAsync("cpm", userId, adminGroups.Id);
-        return Created(uri, newUser);
+        var client = mediator.CreateRequestClient<UserCreateRequest>();
+
+        var newUser = await client.GetResponse<UserCreateResponse>(request);
+
+        return Ok(newUser);
     }
 }

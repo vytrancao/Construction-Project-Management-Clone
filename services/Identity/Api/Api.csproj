@@ -7,18 +7,30 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Duende.AccessTokenManagement" Version="3.2.0" />
-        <PackageReference Include="Keycloak.AuthServices.Authentication" Version="2.6.0" />
-        <PackageReference Include="Keycloak.AuthServices.Authorization" Version="2.6.1" />
-        <PackageReference Include="Keycloak.AuthServices.Sdk" Version="2.6.1" />
-        <PackageReference Include="StackExchange.Redis" Version="2.8.24" />
+        <PackageReference Include="Duende.AccessTokenManagement" Version="3.2.0"/>
+        <PackageReference Include="Keycloak.AuthServices.Authentication" Version="2.6.0"/>
+        <PackageReference Include="Keycloak.AuthServices.Authorization" Version="2.6.1"/>
+        <PackageReference Include="Keycloak.AuthServices.Sdk" Version="2.6.1"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.3">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="StackExchange.Redis" Version="2.8.24"/>
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="7.2.0"/>
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.1"/>
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Application\Application.csproj" />
-      <ProjectReference Include="..\Domain\Domain.csproj" />
+        <ProjectReference Include="..\Application\Application.csproj"/>
+        <ProjectReference Include="..\Domain\Domain.csproj"/>
+        <ProjectReference Include="..\Persistence\Persistence.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Reference Include="AutoMapper">
+            <HintPath>..\..\..\..\..\..\.nuget\packages\automapper\14.0.0\lib\net8.0\AutoMapper.dll</HintPath>
+        </Reference>
     </ItemGroup>
 
 </Project>

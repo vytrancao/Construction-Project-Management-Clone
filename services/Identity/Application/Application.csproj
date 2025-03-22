@@ -7,13 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Keycloak.AuthServices.Sdk" Version="2.6.1" />
+        <PackageReference Include="AutoMapper" Version="12.0.1"/>
+        <PackageReference Include="Keycloak.AuthServices.Sdk" Version="2.6.1"/>
+        <PackageReference Include="MassTransit.Kafka" Version="8.4.0"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Extensions\"/>
-        <Folder Include="Models\Keycloak\Responses\"/>
-        <Folder Include="Services\"/>
+        <ProjectReference Include="..\Domain\Domain.csproj"/>
+        <ProjectReference Include="..\Persistence\Persistence.csproj"/>
     </ItemGroup>
 
 </Project>

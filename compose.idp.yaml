@@ -1,0 +1,113 @@
+services:
+  idp_service:
+    container_name: "idp_service"
+    build:
+      context: ./services
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: Identity
+    ports:
+      - 4000:8080
+    networks:
+      - idp_cpm_network
+    environment:
+      Logging__LogLevel__Default: Information
+      Keycloak__realm: cpm
+      Keycloak__EnableRolesMapping: Realm
+      Keycloak__auth-server-url: http://${LOCALHOST_IP}:3000
+      Keycloak__ssl-required: none
+      Keycloak__resource: security-admin-console
+      Keycloak__verify-token-audience: false
+      Keycloak__credentials__secret: s6FokfrwAUixEVjzTHMBoBFxNF3niwva
+      Keycloak__confidential-port: 0
+      ConnectionString: Username=${DB_USER}; Password=${DB_PASSWORD}; Host=idp_pg_pool; Port=5432; Database=${DB_NAME};
+      Messaging__Host: kafka
+      Messaging__Port: 9093
+    depends_on:
+      idp_pg_pool:
+        condition: service_healthy
+
+  idp_cache:
+    image: redis:alpine
+    restart: always
+    ports:
+      - '6379:6379'
+    command: redis-server --loglevel warning
+    networks:
+      - idp_cpm_network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+
+  # Port 5432
+  idp_master_db:
+    container_name: "idp_master_db"
+    extends:
+      file: common_db.yaml
+      service: master_db
+    volumes:
+      - idp_data_master:/var/lib/postgresql/data
+    networks:
+      - idp_cpm_network
+
+  idp_slave_db1:
+    container_name: "idp_slave_db1"
+    extends:
+      file: common_db.yaml
+      service: slave_db
+    environment:
+      REPLICATION_SLOT: slave_1
+      MASTER_DB_HOST: idp_master_db
+    volumes:
+      - idp_data_slave1:/var/lib/postgresql/data
+    networks:
+      - idp_cpm_network
+    depends_on:
+      idp_master_db:
+        condition: service_healthy
+
+  # idp_slave_db2:
+  #   container_name: "idp_slave_db2"
+  #   extends:
+  #     file: common_db.yaml
+  #     service: slave_db
+  #   environment:
+  #     REPLICATION_SLOT: slave_2
+  #     MASTER_DB_HOST: idp_master_db
+  #   volumes:
+  #     - idp_data_slave2:/var/lib/postgresql/data
+  #   networks:
+  #     - idp_cpm_network
+  #   depends_on:
+  #     idp_master_db:
+  #       condition: service_healthy
+  
+  idp_pg_pool:
+    container_name: "idp_pg_pool"
+    extends:
+      file: common_db.yaml
+      service: pgpool
+    ports:
+      - 4001:5432
+    environment:
+      PGPOOL_BACKEND_NODES: 0:idp_master_db:5432,1:idp_slave_db1:5432
+    networks:
+      - idp_cpm_network
+    healthcheck:
+      test: ["CMD", "/opt/bitnami/scripts/pgpool/healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      idp_master_db:
+        condition: service_healthy
+      idp_slave_db1:
+        condition: service_healthy
+
+volumes:
+  idp_data_master:
+  idp_data_slave1:
+
+networks:
+  idp_cpm_network:
+    name: cpm_network
+    external: true
