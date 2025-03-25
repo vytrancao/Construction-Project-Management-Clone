@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile
       args:
         SERVICE_NAME: Identity
+        OWNER: ${OWNER}
+        PAT_TOKEN: ${PAT_TOKEN}
     ports:
       - 4000:8080
     networks:

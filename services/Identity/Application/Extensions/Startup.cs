@@ -1,18 +1,14 @@
 namespace Application.Extensions;
 
 using AutoMapper;
+using Requests.User;
 using Consumers;
-using Contracts.User;
 using MapProfiles;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Services;
 using Services.Abstractions;
-using DependencyInjectionRegistrationExtensions = MassTransit.DependencyInjectionRegistrationExtensions;
-using InMemoryConfigurationExtensions = MassTransit.InMemoryConfigurationExtensions;
-using InMemorySagaRepositoryRegistrationExtensions = MassTransit.InMemorySagaRepositoryRegistrationExtensions;
-using RegistrationExtensions = MassTransit.RegistrationExtensions;
 
 public static class Startup
 {
@@ -39,14 +35,14 @@ public static class Startup
 
             x.AddRider(rider =>
             {
-                rider.AddProducer<UserCreateRequest>("topic-name");
+                rider.AddProducer<CreateUserRequest>("topic-name");
                 rider.AddConsumer<KafkaMessageConsumer>();
 
                 rider.UsingKafka((context, k) =>
                 {
                     k.Host($"{host}:{port}");
 
-                    k.TopicEndpoint<UserCreateRequest>("topic-name", "consumer-group-name",
+                    k.TopicEndpoint<CreateUserRequest>("topic-name", "consumer-group-name",
                         e =>
                         {
                             e.ConfigureConsumer<KafkaMessageConsumer>(context);
@@ -59,7 +55,12 @@ public static class Startup
 
     public static void AddMediators(this IServiceCollection services)
     {
-        services.AddMediator(cfg => { cfg.AddConsumer<CreateUserConsumer>(); });
+        services.AddMediator(cfg =>
+        {
+            cfg.AddConsumer<CreateUserConsumer>();
+            cfg.AddConsumer<SyncUserToIdentityProviderConsumer>();
+            cfg.AddConsumer<SearchUserConsumer>();
+        });
     }
 
     public static void AddAppServices(this IServiceCollection services)

@@ -1,7 +1,7 @@
 namespace Application.MapProfiles;
 
 using AutoMapper;
-using Contracts.User;
+using Requests.User;
 using Domain.Entities;
 using Models.User;
 
@@ -9,10 +9,11 @@ public class UserMapperProfile : Profile
 {
     public UserMapperProfile()
     {
-        CreateMap<UserCreateRequest, User>()
+        CreateMap<CreateUserRequest, User>()
             .ForMember(dest => dest.IdentityUserId, opt => opt.MapFrom(src => src.Id))
-            .ForMember(dest => dest.Id, opt => opt.Ignore());
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ReverseMap();
 
-        CreateMap<User, UserCreateResponse>();
+        CreateMap<User, CreateUserResponse>();
     }
 }

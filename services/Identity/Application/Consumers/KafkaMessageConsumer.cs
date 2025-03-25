@@ -1,14 +1,15 @@
 namespace Application.Consumers;
 
-using Contracts.User;
+using Requests.User;
 using MassTransit;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
-internal class KafkaMessageConsumer(ILogger<KafkaMessageConsumer> logger) : IConsumer<UserCreateRequest>
+internal class KafkaMessageConsumer(ILogger<KafkaMessageConsumer> logger) : IConsumer<CreateUserRequest>
 {
-    public Task Consume(ConsumeContext<UserCreateRequest> context)
+    public Task Consume(ConsumeContext<CreateUserRequest> context)
     {
-        Console.Write("Hello from Kafka!");
+        logger.LogError("Hello from Kafka!");
         return Task.CompletedTask;
     }
 }

@@ -11,5 +11,6 @@ public class IdentityDbContext(DbContextOptions options)
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        new DbSeeder(builder).Seed();
     }
 }

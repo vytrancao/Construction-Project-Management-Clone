@@ -1,14 +1,21 @@
 using Api.Extensions;
 using Application.Extensions;
 using Persistence.Extensions;
+using Serilog;
+using Serilog.Sinks.Graylog;
+using Serilog.Sinks.Graylog.Core.Transport;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 configuration.AddEnvironmentVariables();
 
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
+var isDevelopment = builder.Environment.IsDevelopment();
+if (!isDevelopment)
+{
+    Log.Logger = new LoggerConfiguration().ReadFrom.Configuration(builder.Configuration).CreateLogger();
+    services.AddSerilog();
+}
 
 services.AddControllers();
 services.AddOpenApi();
@@ -32,15 +39,20 @@ var app = builder.Build();
 
 app.UpdateDatabase();
 
-app.MapOpenApi();
-app.UseSwaggerUI(options =>
+if (isDevelopment)
 {
-    options.SwaggerEndpoint($"{Environment.GetEnvironmentVariable("BASE_API_URL")}/identity/openapi/v1.json", "Identity");
-    options.RoutePrefix = "identity";
-});
+    app.MapOpenApi();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint($"openapi/v1.json", "Identity");
+        options.RoutePrefix = "";
+    });
+}
 
 app.UseRouting();
 app.UseAuthorization();
 app.MapControllers();
+if (!isDevelopment)
+    app.UseSerilogRequestLogging();
 
 await app.RunAsync();

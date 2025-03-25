@@ -1,41 +1,34 @@
 namespace Api;
 
-using Application.Contracts.User;
 using Application.Models.User;
-using Domain.Entities;
-using Domain.Enums;
-using MassTransit;
+using Application.Requests.User;
 using MassTransit.Mediator;
 using Microsoft.AspNetCore.Mvc;
 
 [Route("[controller]")]
 [ApiController]
-public class UsersController(
-    ITopicProducer<UserCreateRequest> producer,
-    IMediator mediator,
-    ILogger<UsersController> logger) : ControllerBase
+public class UsersController(IMediator mediator) : ControllerBase
 {
-    [HttpGet]
-    public async Task<ActionResult> GetAsync()
+    [HttpPost]
+    public async Task<ActionResult> SearchAsync([FromBody] SearchUserRequest request)
     {
-        producer.Produce(new UserCreateRequest(
-            Email: "h",
-            FirstName: "h",
-            LastName: "h",
-            Role: UserRole.Admin,
-            Password: "h"
-        ));
-
-        return Ok();
+        var client = mediator.CreateRequestClient<SearchUserRequest>();
+        var users = await client.GetResponse<SearchUserResponse>(request);
+        return Ok(users);
     }
 
     [HttpPost]
-    public async Task<ActionResult> RegisterAsync([FromBody] UserCreateRequest request)
+    public async Task<ActionResult> RegisterAsync([FromBody] CreateUserRequest request)
     {
-        var client = mediator.CreateRequestClient<UserCreateRequest>();
-
-        var newUser = await client.GetResponse<UserCreateResponse>(request);
-
+        var client = mediator.CreateRequestClient<CreateUserRequest>();
+        var newUser = await client.GetResponse<CreateUserResponse>(request);
         return Ok(newUser);
+    }
+
+    [HttpPost("Sync")]
+    public async Task<ActionResult> SyncUserToKeycloak()
+    {
+        await mediator.Send(new SyncUserToIdentityProviderRequest());
+        return Ok();
     }
 }

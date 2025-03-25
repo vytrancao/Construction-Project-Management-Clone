@@ -2,7 +2,7 @@ namespace Application.Models.User;
 
 using Domain.Enums;
 
-public record UserCreateResponse(
+public record CreateUserResponse(
     Guid Id,
     string Email,
     string FirstName,
