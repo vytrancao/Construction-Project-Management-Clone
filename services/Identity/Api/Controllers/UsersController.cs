@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 [ApiController]
 public class UsersController(IMediator mediator) : ControllerBase
 {
-    [HttpPost]
+    [HttpPost("Search")]
     public async Task<ActionResult> SearchAsync([FromBody] SearchUserRequest request)
     {
         var client = mediator.CreateRequestClient<SearchUserRequest>();

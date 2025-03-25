@@ -6,7 +6,7 @@ using Models.User;
 
 public interface IUserService
 {
-    Task<SearchUserResponse> Search(SearchUserRequest request);
+    Task<SearchUserResponse> SearchAsync(SearchUserRequest request);
     IEnumerable<User> GetSyncToIdentityProvider();
     Task<User> CreateAsync(CreateUserRequest request);
     Task<IEnumerable<User>> UpdateRangeAsync(IEnumerable<User> users);

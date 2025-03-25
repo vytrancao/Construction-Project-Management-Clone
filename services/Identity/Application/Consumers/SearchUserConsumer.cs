@@ -13,6 +13,7 @@ public class SearchUserConsumer(
 {
     public async Task Consume(ConsumeContext<SearchUserRequest> context)
     {
-        var users = userService.Search(context.Message);
+        var response = await userService.SearchAsync(context.Message);
+        await context.RespondAsync(response);
     }
 }

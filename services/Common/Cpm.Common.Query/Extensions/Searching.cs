@@ -22,7 +22,7 @@ public static class Searching
     {
         foreach (var criterion in searchModel.SearchCriteria)
         {
-            query.FilterByProperty(criterion.PropertyPath, criterion.CompareOperator, criterion.SearchValue);
+            query = query.FilterByProperty(criterion.PropertyPath, criterion.CompareOperator, criterion.SearchValue);
         }
 
         return query;
@@ -32,7 +32,7 @@ public static class Searching
     {
         foreach (var criterion in searchModel.SortCriteria)
         {
-            query.SortByProperty(criterion.PropertyPath, criterion.Order);
+            query = query.SortByProperty(criterion.PropertyPath, criterion.Order);
         }
 
         return query;
@@ -50,7 +50,10 @@ public static class Searching
     {
         var parameter = Expression.Parameter(typeof(T), "x");
         var property = GetPropertyExpression<T>(parameter, propertyPath);
-        var lambda = Expression.Lambda<Func<T, object>>(property, parameter);
+
+        // Ensure the property is converted to object
+        Expression convertedProperty = Expression.Convert(property, typeof(object));
+        var lambda = Expression.Lambda<Func<T, object>>(convertedProperty, parameter);
 
         query = sortOrder switch
         {
@@ -80,6 +83,7 @@ public static class Searching
         // Convert 'value' to the same type as the property
         var propertyType = property.Type;
         var constant = Expression.Constant(Convert.ChangeType(value, propertyType));
+        // var constant = Expression.Constant(Convert.ChangeType(value, propertyType));
 
         Expression operation = compareOperator switch
         {
@@ -89,7 +93,7 @@ public static class Searching
             CompareOperator.NotEqual => Expression.NotEqual(property, constant),
             CompareOperator.GreaterOrEqual => Expression.GreaterThanOrEqual(property, constant),
             CompareOperator.Greater => Expression.GreaterThan(property, constant),
-            CompareOperator.Contains => Expression.Call(property, typeof(string).GetMethod("Contains", new[] { typeof(string) }), constant),
+            CompareOperator.Contains => Expression.Call(property, typeof(string).GetMethod("Contains", [typeof(string)])!, constant),
             _ => throw new ArgumentOutOfRangeException(nameof(compareOperator), compareOperator, null)
         };
         var expression = Expression.Lambda<Func<T, bool>>(operation, parameter!);

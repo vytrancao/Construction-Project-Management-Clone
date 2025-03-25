@@ -15,5 +15,6 @@ public class UserMapperProfile : Profile
             .ReverseMap();
 
         CreateMap<User, CreateUserResponse>();
+        CreateMap<User, UserModel>();
     }
 }

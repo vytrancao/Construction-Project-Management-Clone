@@ -14,10 +14,20 @@ public class UserService(
     IUserRepository userRepository,
     IMapper mapper) : IUserService
 {
-    public async Task<SearchUserResponse> Search(SearchUserRequest request)
+    public async Task<SearchUserResponse> SearchAsync(SearchUserRequest request)
     {
         var query = userRepository.Get();
         var totalPage = query.CalculateTotalPage(request);
+        // query = query.FilterByProperty("Email", CompareOperator.Equal, "haha");
+        // var users = await query.Filter(request).Sort(request).Paginate(request).ToListAsync();
+        // query = query.Filter(request);
+
+        // foreach (var criterion in request.SearchCriteria)
+        // {
+        //     Console.WriteLine($"Applying filter on {criterion.PropertyPath} with {criterion.CompareOperator} {criterion.SearchValue}");
+        //     query = query.FilterByProperty(criterion.PropertyPath, criterion.CompareOperator, criterion.SearchValue);
+        // }
+        // query = query.Sort(request);
         var users = await query.Filter(request).Sort(request).Paginate(request).ToListAsync();
         return new SearchUserResponse
         {
