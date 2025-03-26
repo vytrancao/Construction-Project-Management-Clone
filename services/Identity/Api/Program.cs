@@ -2,8 +2,6 @@ using Api.Extensions;
 using Application.Extensions;
 using Persistence.Extensions;
 using Serilog;
-using Serilog.Sinks.Graylog;
-using Serilog.Sinks.Graylog.Core.Transport;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;

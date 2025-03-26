@@ -80,7 +80,7 @@ services:
     networks:  
       - cpm_network
 
-  kafka-ui:
+  kafka_ui:
     image: ghcr.io/kafbat/kafka-ui:latest
     logging:
       driver: none
@@ -94,6 +94,31 @@ services:
       - kafka
     networks:  
       - cpm_network
+
+  api_gateway:
+    container_name: cpm_api_gateway
+    build:
+      context: ./services
+      dockerfile: Dockerfile.Gateway
+    ports:
+      - 3003:8080
+    networks:
+      - cpm_network
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      Logging__LogLevel__Default: Information
+      Logging__LogLevel__Microsoft.AspNetCore: Warning
+      AllowedHosts: "*"
+      Keycloak__realm: cpm
+      Keycloak__auth-server-url: http://${LOCALHOST_IP}:3000
+      Keycloak__ssl-required: none
+      Keycloak__resource: security-admin-console
+      Keycloak__verify-token-audience: false
+      Keycloak__credentials__secret: s6FokfrwAUixEVjzTHMBoBFxNF3niwva
+      Keycloak__confidential-port: 0
+      Keycloak__DefaultPassword: "123"
+    depends_on:
+      - idp_service
 
 networks:
   cpm_network:
