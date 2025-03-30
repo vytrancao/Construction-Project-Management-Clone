@@ -8,6 +8,17 @@ var services = builder.Services;
 var configuration = builder.Configuration;
 configuration.AddEnvironmentVariables();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "UiCorsPolicy",
+                      policy =>
+                      {
+                          policy.AllowAnyOrigin();
+                          policy.AllowAnyHeader();
+                          policy.AllowAnyMethod();
+                      });
+});
+
 var isDevelopment = builder.Environment.IsDevelopment();
 if (!isDevelopment)
 {

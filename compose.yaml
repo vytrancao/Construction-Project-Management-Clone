@@ -24,6 +24,18 @@ services:
   #     - keycloak
   #     - idp_service
 
+  keycloak_db:
+    container_name: "keycloak_db"
+    extends:
+      file: common_db.yaml
+      service: master_db
+    ports:
+      - "3005:5432"
+    volumes:
+      - postgres_keycloak_data:/var/lib/postgresql/data
+    networks:
+      - cpm_network
+
   keycloak:
     container_name: cpm_keycloak
     image: quay.io/keycloak/keycloak:latest
@@ -39,7 +51,7 @@ services:
       - KC_DB=postgres  
       - KC_DB_USERNAME=${DB_USER}  
       - KC_DB_PASSWORD=${DB_PASSWORD}  
-      - KC_DB_URL=jdbc:postgresql://${LOCALHOST_IP}:${DB_PORT}/${KEYCLOAK_DB_NAME}
+      - KC_DB_URL=jdbc:postgresql://keycloak_db:${DB_PORT}/${DB_NAME}
     networks:  
       - cpm_network
 
@@ -114,7 +126,7 @@ services:
       Keycloak__ssl-required: none
       Keycloak__resource: security-admin-console
       Keycloak__verify-token-audience: false
-      Keycloak__credentials__secret: s6FokfrwAUixEVjzTHMBoBFxNF3niwva
+      Keycloak__credentials__secret: AQxvxHNXn9RFvtB9HYq2BYcgU3Njh9bt
       Keycloak__confidential-port: 0
       Keycloak__DefaultPassword: "123"
     depends_on:

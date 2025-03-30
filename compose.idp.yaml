@@ -24,7 +24,7 @@ services:
       Keycloak__ssl-required: none
       Keycloak__resource: security-admin-console
       Keycloak__verify-token-audience: false
-      Keycloak__credentials__secret: s6FokfrwAUixEVjzTHMBoBFxNF3niwva
+      Keycloak__credentials__secret: AQxvxHNXn9RFvtB9HYq2BYcgU3Njh9bt
       Keycloak__confidential-port: 0
       Keycloak__DefaultPassword: "123"
       Messaging__Host: kafka

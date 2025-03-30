@@ -5,7 +5,8 @@
         "GET",
         "POST",
         "PUT",
-        "DELETE"
+        "DELETE",
+        "OPTIONS"
       ],
       "UpstreamPathTemplate": "/idp/{url}",
       "DownstreamPathTemplate": "/{url}",
