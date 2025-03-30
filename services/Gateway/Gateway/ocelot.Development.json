@@ -5,17 +5,22 @@
         "GET",
         "POST",
         "PUT",
-        "DELETE"
+        "DELETE",
+        "OPTIONS"
       ],
       "UpstreamPathTemplate": "/idp/{url}",
       "DownstreamPathTemplate": "/{url}",
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5091
+          "Host": "idp_service",
+          "Port": 8080
         }
-      ]
+      ],
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      }
     },
     {
       "UpstreamHttpMethod": [

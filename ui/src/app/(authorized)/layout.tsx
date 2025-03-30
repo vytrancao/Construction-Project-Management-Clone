@@ -2,7 +2,8 @@
 
 import { AppLayout } from '@/components/layouts';
 import * as React from 'react';
-import { NextAuthProvider } from '@/components/auth';
+import { Provider } from 'react-redux';
+import { store } from '@/store';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -10,11 +11,11 @@ interface DashboardLayoutProps {
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
   return (
-    <NextAuthProvider>
+    <Provider store={store}>
       <AppLayout>
         {children}
       </AppLayout>
-    </NextAuthProvider>
+    </Provider>
   );
 };
 

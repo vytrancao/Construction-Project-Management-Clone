@@ -8,8 +8,17 @@ var services = builder.Services;
 var configuration = builder.Configuration;
 configuration.AddEnvironmentVariables();
 
-<<<<<<< Updated upstream
-=======
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "UiCorsPolicy",
+                      policy =>
+                      {
+                          policy.AllowAnyOrigin();
+                          policy.AllowAnyHeader();
+                          policy.AllowAnyMethod();
+                      });
+});
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "UiCorsPolicy",
@@ -21,7 +30,6 @@ builder.Services.AddCors(options =>
         });
 });
 
->>>>>>> Stashed changes
 var isDevelopment = builder.Environment.IsDevelopment();
 if (!isDevelopment)
 {

@@ -9,6 +9,17 @@ builder.Configuration.AddJsonFile(
     reloadOnChange: true
 );
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "UiCorsPolicy",
+                      policy =>
+                      {
+                          policy.AllowAnyOrigin();
+                          policy.AllowAnyHeader();
+                          policy.AllowAnyMethod();
+                      });
+});
+
 builder.Services.AddKeycloakWebApiAuthentication(builder.Configuration);
 builder.Services.AddAuthorization();
 
@@ -31,6 +42,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors("UiCorsPolicy");
 
 await app.UseOcelot();
 await app.RunAsync();
