@@ -8,6 +8,20 @@ var services = builder.Services;
 var configuration = builder.Configuration;
 configuration.AddEnvironmentVariables();
 
+<<<<<<< Updated upstream
+=======
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: "UiCorsPolicy",
+        policy =>
+        {
+            policy.AllowAnyOrigin();
+            policy.AllowAnyHeader();
+            policy.AllowAnyMethod();
+        });
+});
+
+>>>>>>> Stashed changes
 var isDevelopment = builder.Environment.IsDevelopment();
 if (!isDevelopment)
 {
@@ -24,7 +38,6 @@ services.AddKeycloakAuthenticationAndAuthorization(configuration);
 services.AddKeycloakAdminClient(configuration);
 
 // Services
-services.AddMapper();
 services.AddAppServices();
 services.AddMessaging(configuration);
 services.AddMediators();
@@ -37,9 +50,9 @@ var app = builder.Build();
 
 app.UpdateDatabase();
 
+app.MapOpenApi();
 if (isDevelopment)
 {
-    app.MapOpenApi();
     app.UseSwaggerUI(options =>
     {
         options.SwaggerEndpoint($"openapi/v1.json", "Identity");
