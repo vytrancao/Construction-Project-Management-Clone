@@ -1,5 +1,6 @@
 namespace Application.Models.User;
 
+using Domain.Entities;
 using Domain.Enums;
 
 public record CreateUserResponse(
@@ -8,8 +9,18 @@ public record CreateUserResponse(
     string FirstName,
     string LastName,
     UserRole Role,
-    Guid IdentityUserId
+    Guid? IdentityUserId
 )
 {
-    public Uri CreatedUri { get; set; }
+    public Uri? CreatedUri { get; set; }
+
+    public static CreateUserResponse FromEntity(User user)
+        => new(
+            Id: user.Id,
+            Email: user.Email,
+            FirstName: user.FirstName,
+            LastName: user.LastName,
+            Role: user.Role!,
+            IdentityUserId: user.IdentityUserId
+        );
 }

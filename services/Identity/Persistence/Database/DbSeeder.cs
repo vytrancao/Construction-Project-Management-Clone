@@ -16,6 +16,6 @@ public class DbSeeder(ModelBuilder modelBuilder)
             .RuleFor(u => u.LastName, f => f.Name.LastName())
             .RuleFor(u => u.Role, f => f.PickRandom<UserRole>());
 
-        modelBuilder.Entity<User>().HasData(userFaker.Generate(2000));
+        modelBuilder.Entity<User>().HasData(userFaker.Generate(200));
     }
 }

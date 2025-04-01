@@ -10,9 +10,9 @@ public class User
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Guid Id { get; init; }
 
-    public string Email { get; set; }
-    public string FirstName { get; set; }
-    public string LastName { get; set; }
+    public required string Email { get; set; }
+    public required string FirstName { get; set; }
+    public required string LastName { get; set; }
     public UserRole Role { get; set; }
     public Guid? IdentityUserId { get; set; }
 }

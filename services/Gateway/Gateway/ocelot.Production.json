@@ -2,6 +2,20 @@
   "Routes": [
     {
       "UpstreamHttpMethod": [
+        "GET"
+      ],
+      "UpstreamPathTemplate": "/idp/openapi/{url}",
+      "DownstreamPathTemplate": "/openapi/{url}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "idp_service",
+          "Port": 8080
+        }
+      ]
+    },
+    {
+      "UpstreamHttpMethod": [
         "GET",
         "POST",
         "PUT",

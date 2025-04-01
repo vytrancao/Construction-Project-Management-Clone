@@ -1,15 +1,13 @@
 namespace Application.Consumers;
 
-using AutoMapper;
-using Requests.User;
 using MassTransit;
 using Models.User;
+using Requests.User;
 using Services.Abstractions;
 
 public class CreateUserConsumer(
     IUserService userService,
-    IIdentityProvider identityProvider,
-    IMapper mapper
+    IIdentityProvider identityProvider
 ) : IConsumer<CreateUserRequest>
 {
     public async Task Consume(ConsumeContext<CreateUserRequest> context)
@@ -20,7 +18,7 @@ public class CreateUserConsumer(
         request.Id = registerResponse.Id;
         var newUser = await userService.CreateAsync(request);
 
-        var response = mapper.Map<CreateUserResponse>(newUser);
+        var response = CreateUserResponse.FromEntity(newUser);
         response.CreatedUri = registerResponse.CreatedUri;
 
         await context.RespondAsync(response);

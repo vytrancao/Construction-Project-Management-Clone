@@ -1,24 +1,22 @@
 namespace Application.Services;
 
 using Abstractions;
-using AutoMapper;
-using Requests.User;
 using Keycloak.AuthServices.Sdk.Admin;
 using Keycloak.AuthServices.Sdk.Admin.Models;
 using Microsoft.Extensions.Configuration;
 using Models.Identity;
+using Requests.User;
 
 public class KeycloakProvider(
     IKeycloakClient keycloakClient,
-    IConfiguration configuration,
-    IMapper mapper
+    IConfiguration configuration
 ) : IIdentityProvider
 {
     private readonly string _realm = configuration["Keycloak:realm"]!;
 
     public async Task<RegisteResponse> RegisterUser(CreateUserRequest request)
     {
-        var newUser = mapper.Map<UserRepresentation>(request);
+        var newUser = request.ToIdentityRepresentation();
         var response = await keycloakClient.CreateUserWithResponseAsync(_realm, newUser);
         if (!response.IsSuccessStatusCode)
             throw new Exception(await response.Content.ReadAsStringAsync());

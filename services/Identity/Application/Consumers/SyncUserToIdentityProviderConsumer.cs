@@ -1,6 +1,5 @@
 namespace Application.Consumers;
 
-using AutoMapper;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -11,7 +10,6 @@ public class SyncUserToIdentityProviderConsumer(
     IUserService userService,
     IIdentityProvider identityProvider,
     IConfiguration configuration,
-    IMapper mapper,
     ILogger<SyncUserToIdentityProviderConsumer> logger) : IConsumer<SyncUserToIdentityProviderRequest>
 {
     public async Task Consume(ConsumeContext<SyncUserToIdentityProviderRequest> context)
@@ -21,8 +19,8 @@ public class SyncUserToIdentityProviderConsumer(
         logger.LogInformation("Syncing {Count} users to identity provider", usersToSync.Count());
         foreach (var user in usersToSync)
         {
-            var request = mapper.Map<CreateUserRequest>(user);
-            request.Password = configuration["Keycloak:DefaultPassword"];
+            var request = CreateUserRequest.FromEntity(user);
+            request.Password = configuration["Keycloak:DefaultPassword"]!;
 
             var registerResponse = await identityProvider.RegisterUser(request);
             user.IdentityUserId = registerResponse.Id;

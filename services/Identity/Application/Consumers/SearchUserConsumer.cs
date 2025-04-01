@@ -1,14 +1,11 @@
 namespace Application.Consumers;
 
-using AutoMapper;
 using MassTransit;
 using Requests.User;
 using Services.Abstractions;
 
 public class SearchUserConsumer(
-    IUserService userService,
-    IIdentityProvider identityProvider,
-    IMapper mapper
+    IUserService userService
 ) : IConsumer<SearchUserRequest>
 {
     public async Task Consume(ConsumeContext<SearchUserRequest> context)
