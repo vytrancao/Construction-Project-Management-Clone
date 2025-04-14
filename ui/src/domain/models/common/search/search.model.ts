@@ -1,5 +1,5 @@
-import { SortCriterion } from '@/domain/models/common/search/SortCriterion';
-import { SearchCriterion } from '@/domain/models/common/search/SearchCriterion';
+import { SortCriterion } from '@/domain/models/common/search/sortCriterion';
+import { SearchCriterion } from '@/domain/models/common/search/searchCriterion';
 
 export interface BaseSearchModel {
   searchCriteria: SearchCriterion[];
