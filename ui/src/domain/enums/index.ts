@@ -1,6 +1,6 @@
-import { CompareOperator } from "./CompareOperator";
-import { SortOrder } from "./SortOrder";
-import { UserRole } from "./UserRole";
+import { CompareOperator } from "./compareOperator";
+import { SortOrder } from "./sortOrder";
+import { UserRole } from "./userRole";
 
 export {
   CompareOperator,

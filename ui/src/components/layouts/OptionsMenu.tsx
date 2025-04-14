@@ -30,7 +30,6 @@ const OptionsMenu: React.FC = () => {
       },
     });
     const path = (await res.json()).path;
-    console.log(path);
     router.push(path);
   };
 

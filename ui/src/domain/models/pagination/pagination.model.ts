@@ -5,4 +5,5 @@ export interface PaginationModel {
   pages: number[];
   pageCount: number;
   setPage: Dispatch<SetStateAction<number>>;
+  setPageCount: Dispatch<SetStateAction<number>>;
 }

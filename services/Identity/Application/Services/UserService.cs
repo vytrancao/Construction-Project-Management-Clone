@@ -15,8 +15,13 @@ public class UserService(
     public async Task<SearchUserResponse> SearchAsync(SearchUserRequest request)
     {
         var query = userRepository.Get();
-        var totalPage = query.CalculateTotalPage(request);
-        var users = await query.Filter(request).Sort(request).Paginate(request).ToListAsync();
+        var users = await query
+            .Filter(request)
+            .CalculateTotalPage(request, out var totalPage)
+            .Sort(request)
+            .Paginate(request)
+            .ToListAsync();
+
         return new SearchUserResponse
         {
             PageIndex = request.PageIndex,

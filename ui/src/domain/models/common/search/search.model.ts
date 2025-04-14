@@ -1,14 +1,14 @@
-import { SortCriterion } from '@/domain/models/common/search/sortCriterion';
-import { SearchCriterion } from '@/domain/models/common/search/searchCriterion';
+import { SortCriterionModel } from '@/domain/models/common/search/sortCriterion.model';
+import { SearchCriterionModel } from '@/domain/models/common/search/searchCriterion.model';
 
-export interface BaseSearchModel {
-  searchCriteria: SearchCriterion[];
-  sortCriteria: SortCriterion[];
+export interface SearchModel {
+  searchCriteria: SearchCriterionModel[];
+  sortCriteria: SortCriterionModel[];
   pageIndex: number;
   pageSize: number;
 }
 
-export const defaultBaseSearchModel: BaseSearchModel = {
+export const defaultBaseSearchModel: SearchModel = {
   searchCriteria: [],
   sortCriteria: [],
   pageIndex: 1,

@@ -1,21 +1,24 @@
 "use client";
 
-import { AppLayout } from '@/components/layouts';
 import * as React from 'react';
-import { Provider } from 'react-redux';
-import { store } from '@/store';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import AppLayout from '@/components/layouts/AppLayout';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
 const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+  const queryClient = new QueryClient();
+
   return (
-    <Provider store={store}>
+    <QueryClientProvider client={queryClient}>
       <AppLayout>
         {children}
       </AppLayout>
-    </Provider>
+      <ReactQueryDevtools initialIsOpen={true}/>
+    </QueryClientProvider>
   );
 };
 

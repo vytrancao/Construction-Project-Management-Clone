@@ -2,7 +2,7 @@ import * as React from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
-import { AppNavbar, Header, SideMenu } from '@/components/layouts';
+import { AppNavbar, Header, SideMenu } from '@/components/layouts/index';
 
 interface AppLayoutProps {
   children: React.ReactNode;

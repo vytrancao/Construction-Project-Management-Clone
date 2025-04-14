@@ -13,9 +13,10 @@ public static class Searching
             .Take(searchModel.PageSize);
     }
 
-    public static int CalculateTotalPage<T>(this IQueryable<T> query, BaseSearchModel searchModel)
+    public static IQueryable<T> CalculateTotalPage<T>(this IQueryable<T> query, BaseSearchModel searchModel, out int totalPage)
     {
-        return (int)Math.Ceiling(query.Count() / (double)searchModel.PageSize);
+        totalPage = (int)Math.Ceiling(query.Count() / (double)searchModel.PageSize);
+        return query;
     }
 
     public static IQueryable<T> Filter<T>(this IQueryable<T> query, BaseSearchModel searchModel)

@@ -1,10 +1,11 @@
-import { UserRole } from '@/domain/enums/UserRole';
+import { UserRole } from '@/domain/enums/userRole';
 
-export interface UserModel {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  role: UserRole;
+export class UserModel {
+  id!: string;
+  email!: string;
+  firstName!: string;
+  lastName!: string;
+  role!: UserRole;
   identityUserId?: string;
+  name: string = `${this.firstName} ${this.lastName}`;
 }

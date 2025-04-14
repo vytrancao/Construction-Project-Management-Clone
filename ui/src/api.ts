@@ -1,8 +1,10 @@
+import { SearchModel } from '@/domain/models/common/search/search.model';
+
 export const idp = {
   user: {
     search: {
-      url: '/user/search',
-      key: () => 'user',
+      url: '/idp/users/search',
+      key: (request: SearchModel) => [ 'users', request ],
     }
   }
 };

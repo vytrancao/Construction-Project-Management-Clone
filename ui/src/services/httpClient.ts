@@ -6,6 +6,7 @@ const httpClient = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_BASE_URL,
 });
 
+
 httpClient.interceptors.request.use(
   async (config) => {
     // Retrieve the token from local storage
@@ -13,7 +14,6 @@ httpClient.interceptors.request.use(
 
     // If the token exists, add it to the headers
     if (session?.accessToken && config.headers) {
-      console.log(session.accessToken);
       config.headers.Authorization = `Bearer ${session.accessToken}`;
     }
 

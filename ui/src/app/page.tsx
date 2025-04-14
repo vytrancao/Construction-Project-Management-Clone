@@ -5,7 +5,7 @@ export default function SignIn() {
     <form
       action={async () => {
         "use server";
-        await signIn("keycloak", { callbackUrl: "http://localhost:3001/dashboard" });
+        await signIn("keycloak", { redirect: true, redirectTo: "/dashboard" });
       }}
     >
       <button type="submit">Signin with Keycloak</button>

@@ -1,8 +1,8 @@
-import { useMemo, useState } from 'react';
-import { ColumnDef, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
 import { PaginationModel } from '@/domain/models/pagination/pagination.model';
+import { ColumnDef, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
+import { useMemo, useState } from 'react';
 
-interface Identifiable {
+export interface Identifiable {
   id?: string;
 }
 
@@ -14,6 +14,10 @@ const useDataTable = <T extends Identifiable>(
 ) => {
   const [ pageIndex, setPageIndex ] = useState(0);
   const pageSize = process.env.NEXT_PUBLIC_PAGE_SIZE ? parseInt(process.env.NEXT_PUBLIC_PAGE_SIZE) : 10;
+
+  if (!initialState)
+    initialState = { sorting: [ { id: "createdAt", desc: true } ] };
+
   const table = useReactTable({
     data: tableData,
     columns: columns,
@@ -24,7 +28,6 @@ const useDataTable = <T extends Identifiable>(
     getPaginationRowModel: paginate ? getPaginationRowModel() : undefined,
     initialState: {
       ...initialState,
-      sorting: [ { id: "createdAt", desc: true } ],
     },
     state: {
       pagination: {
@@ -48,6 +51,7 @@ const useDataTable = <T extends Identifiable>(
     pages,
     pageCount,
     setPage: setPageIndex,
+    setPageCount: () => {}
   };
 
   return { table, pagination };

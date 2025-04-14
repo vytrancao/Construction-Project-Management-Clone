@@ -1,6 +1,6 @@
 import { SortOrder } from '@/domain/enums';
 
-export interface SortCriterion {
+export interface SortCriterionModel {
   propertyPath: string;
   order: SortOrder;
 }
