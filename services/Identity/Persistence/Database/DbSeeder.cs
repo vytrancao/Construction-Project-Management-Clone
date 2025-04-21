@@ -14,7 +14,9 @@ public class DbSeeder(ModelBuilder modelBuilder)
             .RuleFor(u => u.Email, f => f.Internet.Email())
             .RuleFor(u => u.FirstName, f => f.Name.FirstName())
             .RuleFor(u => u.LastName, f => f.Name.LastName())
-            .RuleFor(u => u.Role, f => f.PickRandom<UserRole>());
+            .RuleFor(u => u.Role, f => f.PickRandom<UserRole>())
+            .RuleFor(u => u.Phone, f => f.Phone.PhoneNumber())
+            .RuleFor(u => u.Address, f => f.Address.FullAddress());
 
         modelBuilder.Entity<User>().HasData(userFaker.Generate(200));
     }

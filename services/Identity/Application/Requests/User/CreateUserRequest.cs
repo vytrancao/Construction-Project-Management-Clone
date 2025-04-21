@@ -1,5 +1,6 @@
 namespace Application.Requests.User;
 
+using Bogus.DataSets;
 using Domain.Constants;
 using Domain.Entities;
 using Domain.Enums;
@@ -10,13 +11,24 @@ public record CreateUserRequest(
     string FirstName,
     string LastName,
     UserRole Role,
-    string Password
+    string Password,
+    string Phone,
+    string Address
 )
 {
     public string Password { get; set; } = Password;
     public Guid? Id { get; set; }
 
-    public CreateUserRequest() : this("", "", "", UserRole.Client, "")
+    public CreateUserRequest()
+        : this(
+            Email: string.Empty,
+            FirstName: string.Empty,
+            LastName: string.Empty,
+            Role: UserRole.Employee,
+            Password: string.Empty,
+            Phone: string.Empty,
+            Address: string.Empty
+        )
     {
     }
 
@@ -26,7 +38,9 @@ public record CreateUserRequest(
             Email = Email,
             FirstName = FirstName,
             LastName = LastName,
-            Role = Role
+            Role = Role,
+            Phone = Phone,
+            Address = Address,
         };
 
     public UserRepresentation ToIdentityRepresentation()
@@ -54,6 +68,8 @@ public record CreateUserRequest(
             FirstName: user.FirstName,
             LastName: user.LastName,
             Role: user.Role,
-            Password: string.Empty
+            Password: string.Empty,
+            Phone: user.Phone,
+            Address: user.Address
         );
 }

@@ -11,7 +11,7 @@ services:
     ports:
       - 4000:8080
     networks:
-      - idp_cpm_network
+      - cpm_network
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       Logging__LogLevel__Default: Information
@@ -47,7 +47,7 @@ services:
       - '6379:6379'
     command: redis-server --loglevel warning
     networks:
-      - idp_cpm_network
+      - cpm_network
     healthcheck:
       test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
 
@@ -60,7 +60,7 @@ services:
     volumes:
       - idp_data_master:/var/lib/postgresql/data
     networks:
-      - idp_cpm_network
+      - cpm_network
 
   idp_slave_db1:
     container_name: "idp_slave_db1"
@@ -73,7 +73,7 @@ services:
     volumes:
       - idp_data_slave1:/var/lib/postgresql/data
     networks:
-      - idp_cpm_network
+      - cpm_network
     depends_on:
       idp_master_db:
         condition: service_healthy
@@ -104,7 +104,7 @@ services:
     environment:
       PGPOOL_BACKEND_NODES: 0:idp_master_db:5432,1:idp_slave_db1:5432
     networks:
-      - idp_cpm_network
+      - cpm_network
     healthcheck:
       test: ["CMD", "/opt/bitnami/scripts/pgpool/healthcheck.sh"]
       interval: 10s
@@ -121,6 +121,6 @@ volumes:
   idp_data_slave1:
 
 networks:
-  idp_cpm_network:
+  cpm_network:
     name: cpm_network
     external: true

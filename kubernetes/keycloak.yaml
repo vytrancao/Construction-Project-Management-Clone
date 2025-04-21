@@ -51,7 +51,7 @@ spec:
         - name: KC_DB_PASSWORD
           value: "121002"  
         - name: KC_DB_URL
-          value: jdbc:postgresql://192.168.1.6:5432/keycloak
+          value: jdbc:postgresql://192.168.1.217:5432/keycloak
         ports:
           - name: http
             containerPort: 8080

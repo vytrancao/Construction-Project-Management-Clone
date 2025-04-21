@@ -1,0 +1,80 @@
+services:
+  # proj_service:
+  #   container_name: "proj_service"
+  #   build:
+  #     context: ./services
+  #     dockerfile: Dockerfile
+  #     args:
+  #       SERVICE_NAME: Project
+  #       OWNER: ${OWNER}
+  #       PAT_TOKEN: ${PAT_TOKEN}
+  #   ports:
+  #     - 5000:8080
+  #   networks:
+  #     - cpm_network
+  #   environment:
+  #     ASPNETCORE_ENVIRONMENT: Development
+  #     Logging__LogLevel__Default: Information
+  #     Logging__LogLevel__Microsoft.AspNetCore: Warning
+  #     AllowedHosts: "*"
+  #     ConnectionString: Username=${DB_USER}; Password=${DB_PASSWORD}; Host=idp_pg_pool; Port=5432; Database=${DB_NAME};
+  #     Keycloak__realm: cpm
+  #     Keycloak__EnableRolesMapping: Realm
+  #     Keycloak__auth-server-url: http://${LOCALHOST_IP}:3000
+  #     Keycloak__ssl-required: none
+  #     Keycloak__resource: security-admin-console
+  #     Keycloak__verify-token-audience: false
+  #     Keycloak__credentials__secret: AQxvxHNXn9RFvtB9HYq2BYcgU3Njh9bt
+  #     Keycloak__confidential-port: 0
+  #     Keycloak__DefaultPassword: "123"
+  #     Messaging__Host: kafka
+  #     Messaging__Port: 9093
+  #     Serilog__Using__0: Serilog.Sinks.Graylog
+  #     Serilog__MinimumLevel: Information
+  #     Serilog__WriteTo__0__Name: Graylog
+  #     Serilog__WriteTo__0__Args__hostnameOrAddress: localhost
+  #     Serilog__WriteTo__0__Args__port: 12201
+  #     Serilog__WriteTo__0__Args__transportType: Udp
+  #     Serilog__Properties__Application: Centralized logging application
+  #   depends_on:
+  #     proj_pg_pool:
+  #       condition: service_healthy
+
+  # Port 5432
+  proj_master_db:
+    container_name: "proj_master_db"
+    extends:
+      file: common_db.yaml
+      service: master_db
+    volumes:
+      - proj_data_master:/var/lib/postgresql/data
+    networks:
+      - cpm_network
+  
+  proj_pg_pool:
+    container_name: "proj_pg_pool"
+    extends:
+      file: common_db.yaml
+      service: pgpool
+    ports:
+      - 5001:5432
+    environment:
+      PGPOOL_BACKEND_NODES: 0:proj_master_db:5432
+    networks:
+      - cpm_network
+    healthcheck:
+      test: ["CMD", "/opt/bitnami/scripts/pgpool/healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      proj_master_db:
+        condition: service_healthy
+
+volumes:
+  proj_data_master:
+
+networks:
+  cpm_network:
+    name: cpm_network
+    external: true

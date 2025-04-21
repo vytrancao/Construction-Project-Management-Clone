@@ -1,1 +1,4 @@
-*.env*
+.env*
+keycloak_db/*
+
+*/.idea/*

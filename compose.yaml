@@ -55,6 +55,23 @@ services:
     networks:  
       - cpm_network
 
+  # keycloak:
+  #   container_name: cpm_keycloak
+  #   image: quay.io/keycloak/keycloak:latest
+  #   command: ["start-dev"]  
+  #   ports:  
+  #     - 3000:8080
+  #   environment:
+  #     - KC_PROXY_ADDRESS_FORWARDING=true
+  #     - KC_HTTP_ENABLED=true
+  #     - REDIRECT_SOCKET=proxy-https
+  #     - KEYCLOAK_ADMIN=admin  
+  #     - KEYCLOAK_ADMIN_PASSWORD=admin
+  #     - KC_DB=postgres  
+  #     - KC_DB_URL=${KEYCLOAK_DB_CONSTR}
+  #   networks:  
+  #     - cpm_network
+
   # cpm_ui:
   #   container_name: cpm_ui
   #   build:
