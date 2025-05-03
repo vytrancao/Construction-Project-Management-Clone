@@ -1,4 +1,4 @@
-import { PaginationModel } from '@/domain/models/pagination/pagination.model';
+import { PaginatedResponse } from '@/domain/models/pagination/paginatedResponse';
 import { ColumnDef, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
 import { useMemo, useState } from 'react';
 
@@ -46,7 +46,7 @@ const useDataTable = <T extends Identifiable>(
     return pages;
   }, [ pageCount ]);
 
-  const pagination: PaginationModel = {
+  const pagination: PaginatedResponse = {
     pageIndex,
     pages,
     pageCount,

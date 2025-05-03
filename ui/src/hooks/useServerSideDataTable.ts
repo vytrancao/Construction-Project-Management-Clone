@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { ColumnDef, ColumnFiltersState, getCoreRowModel, SortingState, useReactTable } from '@tanstack/react-table';
 import { Identifiable } from '@/hooks/useDataTable';
-import { PaginationModel } from '@/domain/models/pagination/pagination.model';
+import { PaginatedResponse } from '@/domain/models/pagination/paginatedResponse';
 import { DEFAULT_PAGE_SIZE } from '@/domain/constants/paging';
 
 const useServerSideDataTable = <T extends Identifiable>(
@@ -47,7 +47,7 @@ const useServerSideDataTable = <T extends Identifiable>(
     return pages;
   }, [ pageCount ]);
 
-  const pagination: PaginationModel = {
+  const pagination: PaginatedResponse = {
     pageIndex,
     pages,
     pageCount,

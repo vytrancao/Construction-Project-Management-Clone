@@ -1,7 +1,7 @@
 import React from 'react';
 import { Column } from '@tanstack/react-table';
 import { CompareOperator } from '@/domain/enums';
-import { SearchCriterionModel } from '@/domain/models/common/search/searchCriterion.model';
+import { SearchCriterion } from '@/domain/models/common/search/searchCriterion';
 import { TextField } from '@mui/material';
 
 interface TextFilterProps<T> {
@@ -12,7 +12,7 @@ interface TextFilterProps<T> {
 export const TextFilter = <T, >({ column, isServerSide }: TextFilterProps<T>) => {
   const setFilterValue = (value: string) => {
     if (isServerSide) {
-      const searchCriterion: SearchCriterionModel = {
+      const searchCriterion: SearchCriterion = {
         propertyPath: column.id,
         searchValue: value,
         compareOperator: CompareOperator.Contains
@@ -25,14 +25,18 @@ export const TextFilter = <T, >({ column, isServerSide }: TextFilterProps<T>) =>
 
   const getFilterValue = (): string => {
     if (isServerSide) {
-      return ((column?.getFilterValue() ?? '') as SearchCriterionModel).searchValue as string;
+      return ((column?.getFilterValue() ?? '') as SearchCriterion).searchValue as string;
     } else {
       return (column?.getFilterValue() ?? '') as string;
     }
   };
 
   return <TextField
+    hiddenLabel
     value={getFilterValue()}
     onChange={e => setFilterValue(e.target.value)}
-    placeholder="Search ..." autoComplete="new-password"/>;
+    placeholder="Search ..."
+    autoComplete="new-password"
+    size="small"
+  />;
 };

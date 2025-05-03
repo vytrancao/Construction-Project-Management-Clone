@@ -1,12 +1,12 @@
 import { createColumnHelper } from '@tanstack/react-table';
-import { UserModel } from '@/domain/models/user/user.model';
+import { User } from '@/domain/models/user/user';
 import { USER_ROLES } from '@/domain/constants/choices';
 import { TextFilter } from '@/components/table/filter/TextFilter';
 
 const UserTable = (
   // router: AppRouterInstance, onDeleteClick: (id: string) => void
 ) => {
-  const columnHelper = createColumnHelper<UserModel>();
+  const columnHelper = createColumnHelper<User>();
 
   const getUserDisplayRole = (role: number) => USER_ROLES.data.find(x => x.value === role)?.key;
 

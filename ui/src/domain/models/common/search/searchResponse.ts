@@ -1,4 +1,4 @@
-export class SearchResponseModel<T> {
+export class SearchResponse<T> {
   pageIndex: number;
   pageSize: number;
   totalPage: number;

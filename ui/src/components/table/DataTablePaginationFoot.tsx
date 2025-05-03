@@ -1,9 +1,9 @@
 import React from 'react';
-import { PaginationModel } from '@/domain/models/pagination/pagination.model';
+import { PaginatedResponse } from '@/domain/models/pagination/paginatedResponse';
 import { Pagination, TableCell, TableFooter, TableRow } from '@mui/material';
 
 interface DataTablePaginationFootProps {
-  pagination: PaginationModel
+  pagination: PaginatedResponse
 }
 
 const DataTablePaginationFoot: React.FC<DataTablePaginationFootProps> = ({ pagination }) => {

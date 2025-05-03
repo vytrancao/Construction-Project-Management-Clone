@@ -4,12 +4,15 @@ import UserService from '@/services/user';
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { idp } from '@/api';
 import { Paper } from '@mui/material';
-import { defaultBaseSearchModel } from '@/domain/models/common/search/search.model';
+import { defaultBaseSearchModel } from '@/domain/models/common/search/searchRequest';
 import UserTable from '@/components/table/UserTable';
 import useServerSideDataTable from '@/hooks/useServerSideDataTable';
 import { DataTable } from '@/components/table';
 import { SortOrder } from '@/domain/enums';
-import { SearchCriterionModel } from '@/domain/models/common/search/searchCriterion.model';
+import { SearchCriterion } from '@/domain/models/common/search/searchCriterion';
+import Button from '@mui/material/Button';
+import { Grid } from '@mui/system';
+import { useRouter } from 'next/navigation';
 
 const DashboardPage: React.FC = ({}) => {
   const [ userSearchRequest, setUserSearchRequest ] = React.useState(defaultBaseSearchModel);
@@ -20,6 +23,7 @@ const DashboardPage: React.FC = ({}) => {
     placeholderData: keepPreviousData,
   });
 
+  const router = useRouter();
   const { table, pagination, sorting, filtering } = useServerSideDataTable(userResult?.items || [], UserTable());
 
   useEffect(() => {
@@ -36,8 +40,8 @@ const DashboardPage: React.FC = ({}) => {
           order: x.desc ? SortOrder.Desc : SortOrder.Asc,
         };
       }),
-      searchCriteria: filtering.filter(x => !!(x.value as SearchCriterionModel).searchValue).map(x => {
-        const searchCriterion = x.value as SearchCriterionModel;
+      searchCriteria: filtering.filter(x => !!(x.value as SearchCriterion).searchValue).map(x => {
+        const searchCriterion = x.value as SearchCriterion;
         return {
           propertyPath: x.id,
           searchValue: searchCriterion.searchValue,
@@ -47,12 +51,21 @@ const DashboardPage: React.FC = ({}) => {
     });
   }, [ pagination.pageIndex, sorting, filtering ]);
 
-  useEffect(() => {
-    console.log(filtering);
-  }, [ filtering ]);
-
   return (
     <>
+      <Grid container style={{ width: '100%' }} className="d-flex justify-content-between">
+        <Grid offset={11} size={1}>
+          <Button
+            color="primary"
+            style={{ width: '100%' }}
+            variant="contained"
+            className="float-end"
+            onClick={() => router.push('/projects/create')}
+          >
+            Create
+          </Button>
+        </Grid>
+      </Grid>
       <Paper sx={{ width: '100%' }}>
         <DataTable table={table} pagination={pagination}/>
       </Paper>

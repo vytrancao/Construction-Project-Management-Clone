@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction } from 'react';
 
-export interface PaginationModel {
+export interface PaginatedResponse {
   pageIndex: number;
   pages: number[];
   pageCount: number;

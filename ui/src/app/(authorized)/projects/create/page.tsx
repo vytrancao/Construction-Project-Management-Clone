@@ -1,16 +1,20 @@
 import React from 'react';
 import { auth } from '@/auth';
 import { SessionProvider } from 'next-auth/react';
-import DashboardPage from '@/app/(authorized)/dashboard/DashboardPage';
+import ProjectCreatePage from '@/app/(authorized)/projects/create/ProjectCreatePage';
 
-const HomeDashboard: React.FC = async () => {
+interface ProjectCreateProps {
+
+}
+
+const ProjectCreate: React.FC<ProjectCreateProps> = async ({}) => {
   const session = await auth();
 
   return (
     <SessionProvider basePath={"/auth"} session={session}>
-      <DashboardPage/>
+      <ProjectCreatePage/>
     </SessionProvider>
   );
 };
 
-export default HomeDashboard;
+export default ProjectCreate;

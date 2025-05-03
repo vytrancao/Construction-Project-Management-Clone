@@ -1,12 +1,12 @@
-import { UserModel } from '@/domain/models/user/user.model';
+import { User } from '@/domain/models/user/user';
 import httpClient from '@/services/httpClient';
 import * as api from '@/api';
-import { SearchModel } from '@/domain/models/common/search/search.model';
-import { SearchResponseModel } from '@/domain/models/common/search/searchResponse.model';
+import { SearchRequest } from '@/domain/models/common/search/searchRequest';
+import { SearchResponse } from '@/domain/models/common/search/searchResponse';
 
 export default class UserService {
-  public static async searchUser(request: SearchModel): Promise<SearchResponseModel<UserModel>> {
+  public static async searchUser(request: SearchRequest): Promise<SearchResponse<User>> {
     const response = await httpClient.post(api.idp.user.search.url, request);
-    return response.data.message;
+    return response.data;
   }
 }
