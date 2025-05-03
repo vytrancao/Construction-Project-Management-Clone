@@ -17,6 +17,7 @@ services:
       Logging__LogLevel__Default: Information
       Logging__LogLevel__Microsoft.AspNetCore: Warning
       AllowedHosts: "*"
+      ServiceName: Identity
       ConnectionString: Username=${DB_USER}; Password=${DB_PASSWORD}; Host=idp_pg_pool; Port=5432; Database=${DB_NAME};
       Keycloak__realm: cpm
       Keycloak__EnableRolesMapping: Realm
@@ -27,8 +28,7 @@ services:
       Keycloak__credentials__secret: AQxvxHNXn9RFvtB9HYq2BYcgU3Njh9bt
       Keycloak__confidential-port: 0
       Keycloak__DefaultPassword: "123"
-      Messaging__Host: kafka
-      Messaging__Port: 9093
+      Messaging__Host: amqp://guest:guest@rabbitmq:5672
       Serilog__Using__0: Serilog.Sinks.Graylog
       Serilog__MinimumLevel: Information
       Serilog__WriteTo__0__Name: Graylog

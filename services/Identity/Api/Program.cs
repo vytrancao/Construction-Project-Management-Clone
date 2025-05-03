@@ -11,17 +11,6 @@ configuration.AddEnvironmentVariables();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: "UiCorsPolicy",
-                      policy =>
-                      {
-                          policy.AllowAnyOrigin();
-                          policy.AllowAnyHeader();
-                          policy.AllowAnyMethod();
-                      });
-});
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy(name: "UiCorsPolicy",
         policy =>
         {
             policy.AllowAnyOrigin();
@@ -48,7 +37,6 @@ services.AddKeycloakAdminClient(configuration);
 // Services
 services.AddAppServices();
 services.AddMessaging(configuration);
-services.AddMediators();
 services.AddLogging();
 
 // Persistent
@@ -63,7 +51,7 @@ if (isDevelopment)
 {
     app.UseSwaggerUI(options =>
     {
-        options.SwaggerEndpoint($"openapi/v1.json", "Identity");
+        options.SwaggerEndpoint($"openapi/v1.json", configuration["ServiceName"]);
         options.RoutePrefix = "";
     });
 }

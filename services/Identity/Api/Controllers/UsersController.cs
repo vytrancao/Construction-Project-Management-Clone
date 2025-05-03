@@ -2,33 +2,45 @@ namespace Api;
 
 using Application.Models.User;
 using Application.Requests.User;
-using MassTransit.Mediator;
+using Application.Services.Abstractions;
+using Cpm.Common.Messages.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Rebus.Bus;
 
 [Route("[controller]")]
 [ApiController]
-public class UsersController(IMediator mediator) : ControllerBase
+public class UsersController(
+    IUserService userService,
+    IIdentityProvider identityProvider,
+    IBus bus
+) : ControllerBase
 {
     [HttpPost("Search")]
     public async Task<ActionResult> SearchAsync([FromBody] SearchUserRequest request)
     {
-        var client = mediator.CreateRequestClient<SearchUserRequest>();
-        var users = await client.GetResponse<SearchUserResponse>(request);
-        return Ok(users);
+        var response = await userService.SearchAsync(request);
+
+        return Ok(response);
     }
 
     [HttpPost]
     public async Task<ActionResult> RegisterAsync([FromBody] CreateUserRequest request)
     {
-        var client = mediator.CreateRequestClient<CreateUserRequest>();
-        var newUser = await client.GetResponse<CreateUserResponse>(request);
-        return Ok(newUser);
+        var registerResponse = await identityProvider.RegisterUser(request);
+
+        request.Id = registerResponse.Id;
+        var newUser = await userService.CreateAsync(request);
+
+        var response = CreateUserResponse.FromEntity(newUser);
+        response.CreatedUri = registerResponse.CreatedUri;
+
+        return Ok(response);
     }
 
     [HttpPost("Sync")]
     public async Task<ActionResult> SyncUserToKeycloak()
     {
-        await mediator.Send(new SyncUserToIdentityProviderRequest());
+        await bus.Publish(new SyncIdentityUser());
         return Ok();
     }
 }

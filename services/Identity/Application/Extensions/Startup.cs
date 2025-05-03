@@ -1,10 +1,11 @@
 namespace Application.Extensions;
 
-using Consumers;
-using MassTransit;
+using Cpm.Common.Messages;
+using Cpm.Common.Messages.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Requests.User;
+using Rebus.Config;
+using Rebus.Routing.TypeBased;
 using Services;
 using Services.Abstractions;
 
@@ -12,42 +13,18 @@ public static class Startup
 {
     public static void AddMessaging(this IServiceCollection services, IConfiguration configuration)
     {
+        var queueName = configuration["ServiceName"];
         var host = configuration["Messaging:Host"];
-        var port = configuration["Messaging:Port"];
-        services.AddMassTransit(x =>
-        {
-            x.UsingInMemory();
-            x.SetKebabCaseEndpointNameFormatter();
-            x.SetInMemorySagaRepositoryProvider();
-
-            x.AddRider(rider =>
+        services.AddRebus(
+            configure => configure
+                .Transport(x => x.UseRabbitMq(host, queueName))
+                .Routing(x => x.TypeBased().MapAssemblyOf<BaseMessage>(queueName)),
+            onCreated: async bus =>
             {
-                rider.AddProducer<CreateUserRequest>("topic-name");
-                rider.AddConsumer<KafkaMessageConsumer>();
-
-                rider.UsingKafka((context, k) =>
-                {
-                    k.Host($"{host}:{port}");
-
-                    k.TopicEndpoint<CreateUserRequest>("topic-name", "consumer-group-name",
-                        e =>
-                        {
-                            e.ConfigureConsumer<KafkaMessageConsumer>(context);
-                            e.CreateIfMissing();
-                        });
-                });
+                await bus.Subscribe<HelloWorld>();
+                await bus.Subscribe<SyncIdentityUser>();
             });
-        });
-    }
-
-    public static void AddMediators(this IServiceCollection services)
-    {
-        services.AddMediator(cfg =>
-        {
-            cfg.AddConsumer<CreateUserConsumer>();
-            cfg.AddConsumer<SyncUserToIdentityProviderConsumer>();
-            cfg.AddConsumer<SearchUserConsumer>();
-        });
+        services.AutoRegisterHandlersFromAssembly(nameof(Application));
     }
 
     public static void AddAppServices(this IServiceCollection services)

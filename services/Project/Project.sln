@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+#
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{40CDC957-B28F-40B0-88D1-7D15BE104518}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{1E453149-82C9-4BEE-B62C-8E24F7BF68F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cpm.Common.Messages", "..\Common\Cpm.Common.Messages\Cpm.Common.Messages.csproj", "{25C97D27-E157-488A-A7AE-282FBFC8FE6E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{40CDC957-B28F-40B0-88D1-7D15BE104518}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40CDC957-B28F-40B0-88D1-7D15BE104518}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40CDC957-B28F-40B0-88D1-7D15BE104518}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40CDC957-B28F-40B0-88D1-7D15BE104518}.Release|Any CPU.Build.0 = Release|Any CPU
+		{25C97D27-E157-488A-A7AE-282FBFC8FE6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{25C97D27-E157-488A-A7AE-282FBFC8FE6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{25C97D27-E157-488A-A7AE-282FBFC8FE6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{25C97D27-E157-488A-A7AE-282FBFC8FE6E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{25C97D27-E157-488A-A7AE-282FBFC8FE6E} = {1E453149-82C9-4BEE-B62C-8E24F7BF68F5}
+	EndGlobalSection
+EndGlobal
